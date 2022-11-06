@@ -19,13 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\AcnhByml" />
-    <None Remove="Data\AcnhHeaders" />
-    <None Remove="Data\AcnhValues" />
-    <None Remove="IO\BymlWriter.cs.bak" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Data\AcnhByml" />
     <EmbeddedResource Include="Data\AcnhHeaders" />
     <EmbeddedResource Include="Data\AcnhValues" />
