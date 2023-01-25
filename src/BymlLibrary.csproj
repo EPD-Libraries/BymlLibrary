@@ -13,7 +13,6 @@
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
 	<VersionPrefix>1.1.4</VersionPrefix>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<ImplicitUsings>enable</ImplicitUsings>
