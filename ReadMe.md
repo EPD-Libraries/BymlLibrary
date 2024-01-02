@@ -1,4 +1,4 @@
-# Sarc Library
+# Byml Library
 
 Modern **B**inary **Yml** IO library written in managed C#
 
