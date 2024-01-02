@@ -19,20 +19,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\AcnhByml" />
-    <EmbeddedResource Include="Data\AcnhHeaders" />
-    <EmbeddedResource Include="Data\AcnhValues" />
+    <EmbeddedResource Include="Legacy\Data\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\icon.png">  
+    <None Include="../../Icon.png" Link="Assets\Icon.png">  
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-  	<None Include="..\README.md">
+  	<None Include="../../Readme.md" Link="Assets\Readme.md">
   	  <Pack>True</Pack>
   	  <PackagePath>\</PackagePath>
   	</None>

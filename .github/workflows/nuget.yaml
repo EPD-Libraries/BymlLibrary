@@ -1,0 +1,71 @@
+name: "Deploy to NuGet"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  nuget: "https://api.nuget.org/v3/index.json"
+  project_name: BymlLibrary
+  authors: ArchLeaders
+  description: |-
+    Modern Binary Yml IO library written in managed C#
+  readme: ./Readme.md
+  icon: ./Icon.png
+  repo: https://github.com/EPD-Libraries/BymlLibrary
+  spdx: AGPL-3.0-or-later
+  tags: binary-yaml;byml;byaml;yml;zeldamods;epd;totk;botw
+
+jobs:
+  deploy:
+    name: Deploy to NuGet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        shell: bash
+        run: |-
+          dotnet restore src/${{ env.project_name }}/${{ env.project_name }}.csproj
+
+      - name: Build
+        shell: bash
+        run: |-
+          dotnet build src/${{ env.project_name }}/${{ env.project_name }}.csproj \
+          --no-restore                                                            \
+          -c Release                                                              \
+
+      - name: Fetch Version
+        id: version
+        uses: battila7/get-version-action@v2
+
+      - name: Package
+        shell: bash
+        run: |
+          dotnet pack src/${{ env.project_name }}/${{ env.project_name }}.csproj \
+          --no-restore                                                           \
+          -c Release                                                             \
+          -o ./build-output/                                                     \
+          -p:Authors="${{ env.authors }}"                                        \
+          -p:Description="${{ env.description }}"                                \
+          -p:PackageLicenseExpression="${{ env.spdx }}"                          \
+          -p:PackageProjectUrl="${{ env.repo }}"                                 \
+          -p:PackageReadmeFile="${{ env.readme }}"                               \
+          -p:PackageIcon="${{ env.icon }}"                                       \
+          -p:PackageTags='"${{ env.tags }}"'                                     \
+          -p:PackageVersion="${{ steps.version.outputs.version-without-v }}"     \
+          -p:RepositoryUrl="${{ env.repo }}"                                     \
+
+      - name: Push
+        shell: bash
+        run: |-
+          dotnet nuget push ./build-output/*.nupkg \
+          -k ${{ secrets.NUGET_AUTH }}             \
+          -s ${{ env.nuget }}                      \
