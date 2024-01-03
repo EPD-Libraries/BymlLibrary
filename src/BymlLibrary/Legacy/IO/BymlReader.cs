@@ -162,10 +162,10 @@ internal class BymlReader : BymlFile
         reader.Position = reader.ReadUInt32();
 
         // Get node value
-        dynamic value = nodeType switch {
-            NodeType.Int64 => reader.ReadInt64(),
-            NodeType.UInt64 => reader.ReadUInt64(),
-            NodeType.Double => reader.ReadDouble(),
+        BymlNode value = nodeType switch {
+            NodeType.Int64 => new(reader.ReadInt64()),
+            NodeType.UInt64 => new(reader.ReadUInt64()),
+            NodeType.Double => new(reader.ReadDouble()),
             _ => throw new BymlException($"Unknown node type '{nodeType}'."),
         };
 
