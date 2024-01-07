@@ -1,6 +1,6 @@
 ﻿using Syroot.BinaryData;
 
-namespace Nintendo.Byml.IO;
+namespace BymlLibrary.Legacy.IO;
 
 /// <summary>
 /// BinaryStream extension methods

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace Nintendo.Byml;
+namespace BymlLibrary.Legacy;
 
 internal class Resource
 {

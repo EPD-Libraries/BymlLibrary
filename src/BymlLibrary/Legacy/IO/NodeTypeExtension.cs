@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Nintendo.Byml.IO;
+namespace BymlLibrary.Legacy.IO;
 
 /// <summary>
 /// BymlNodeType extension methods

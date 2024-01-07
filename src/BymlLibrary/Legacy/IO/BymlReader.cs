@@ -1,9 +1,9 @@
-﻿using Nintendo.Byml.Collections;
+﻿using BymlLibrary.Legacy.Collections;
 using Syroot.BinaryData;
 using Syroot.BinaryData.Core;
 using System.Text;
 
-namespace Nintendo.Byml.IO;
+namespace BymlLibrary.Legacy.IO;
 
 internal class BymlReader : BymlFile
 {

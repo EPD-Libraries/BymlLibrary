@@ -1,7 +1,7 @@
 ﻿using Syroot.BinaryData;
 using System.Text;
 
-namespace Nintendo.Byml.IO;
+namespace BymlLibrary.Legacy.IO;
 
 internal class BymlWriter
 {

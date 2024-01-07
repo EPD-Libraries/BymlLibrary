@@ -1,9 +1,9 @@
-﻿using Nintendo.Byml.IO;
+﻿using BymlLibrary.Legacy.IO;
 using Syroot.BinaryData.Core;
 using System.Text;
 using System.Xml;
 
-namespace Nintendo.Byml.Parser;
+namespace BymlLibrary.Legacy.Parser;
 
 internal static class XmlConverter
 {

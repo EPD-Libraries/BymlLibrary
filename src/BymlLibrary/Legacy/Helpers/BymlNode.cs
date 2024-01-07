@@ -1,6 +1,6 @@
-﻿using Nintendo.Byml.Parser;
+﻿using BymlLibrary.Legacy.Parser;
 
-namespace Nintendo.Byml;
+namespace BymlLibrary.Legacy;
 
 public class BymlNode : IEquatable<BymlNode>
 {

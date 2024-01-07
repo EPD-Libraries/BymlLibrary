@@ -1,4 +1,4 @@
-﻿namespace Nintendo.Byml;
+﻿namespace BymlLibrary.Legacy;
 
 /// <summary>
 /// Represents the type of which a dynamic BYML node can be.

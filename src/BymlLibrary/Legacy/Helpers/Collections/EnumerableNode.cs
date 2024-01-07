@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Nintendo.Byml.Collections;
+namespace BymlLibrary.Legacy.Collections;
 
 internal class EnumerableNode
 {

@@ -1,4 +1,4 @@
-﻿namespace Nintendo.Byml;
+﻿namespace BymlLibrary.Legacy;
 
 internal class AsciiComparer : IComparer<string>
 {

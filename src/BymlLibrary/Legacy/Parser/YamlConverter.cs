@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace Nintendo.Byml.Parser;
+namespace BymlLibrary.Legacy.Parser;
 
 public class YamlConverter
 {

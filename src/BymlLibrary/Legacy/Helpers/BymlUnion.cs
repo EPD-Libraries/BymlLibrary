@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Nintendo.Byml;
+namespace BymlLibrary.Legacy;
 
 [StructLayout(LayoutKind.Explicit, Size = 16)]
 internal unsafe struct BymlUnion

@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
-using Nintendo.Byml.IO;
-using Nintendo.Byml.Parser;
+using BymlLibrary.Legacy.IO;
+using BymlLibrary.Legacy.Parser;
 using Syroot.BinaryData.Core;
 using System.Text;
 
-namespace Nintendo.Byml;
+namespace BymlLibrary.Legacy;
 
 public class BymlFile
 {
