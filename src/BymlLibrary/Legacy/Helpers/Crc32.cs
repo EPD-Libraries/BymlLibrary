@@ -5,7 +5,7 @@
 
 using System.Text;
 
-namespace Byml.Security.Cryptography;
+namespace BymlLibrary.Legacy;
 
 /// <summary>
 /// Computes a CRC32 checksum.

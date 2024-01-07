@@ -1,5 +1,4 @@
-﻿using Byml.Security.Cryptography;
-using SharpYaml.Serialization;
+﻿using SharpYaml.Serialization;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
