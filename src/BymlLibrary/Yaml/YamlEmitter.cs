@@ -25,11 +25,11 @@ public class YamlEmitter
 
     public void EmitNode(in ImmutableByml byml, in ImmutableByml root)
     {
-        if (byml.Type.IsHasMap()) {
-            byml.GetHashMap().EmitYaml(this, root);
+        if (byml.Type == BymlNodeType.HashMap32) {
+            byml.GetHashMap32().EmitYaml(this, root);
         }
-        else if (byml.Type == BymlNodeType.RemappedHashMap) {
-
+        else if (byml.Type == BymlNodeType.HashMap64) {
+            byml.GetHashMap64().EmitYaml(this, root);
         }
         else if (byml.Type == BymlNodeType.String) {
             EmitString(root.StringTable[byml.GetStringIndex()]);

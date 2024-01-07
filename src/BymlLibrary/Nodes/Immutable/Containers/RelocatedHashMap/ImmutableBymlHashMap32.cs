@@ -6,9 +6,9 @@ using Revrs.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace BymlLibrary.Nodes.Immutable.Containers;
+namespace BymlLibrary.Nodes.Immutable.Containers.RelocatedHashMap;
 
-public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int count, BymlNodeType type)
+public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, int count, BymlNodeType type)
 {
     /// <summary>
     /// Span of the BYMl data
@@ -44,9 +44,11 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
         : data[(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count)..]
             .ReadSpan<BymlNodeType>(count + 1);
 
-    public readonly ImmutableBymlHashMapEntry this[int index] {
+    public readonly ImmutableBymlHashMap32Entry this[int index]
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
+        get
+        {
             Entry entry = _entries[index];
             return new(entry.Hash, _data, entry.Value, _types[index]);
         }
@@ -75,12 +77,13 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
         => new(this);
 
     [method: MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref struct Enumerator(ImmutableBymlHashMap container)
+    public ref struct Enumerator(ImmutableBymlHashMap32 container)
     {
-        private readonly ImmutableBymlHashMap _container = container;
+        private readonly ImmutableBymlHashMap32 _container = container;
         private int _index = -1;
 
-        public readonly ImmutableBymlHashMapEntry Current {
+        public readonly ImmutableBymlHashMap32Entry Current
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _container[_index];
         }
@@ -88,7 +91,8 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (++_index >= _container.Count) {
+            if (++_index >= _container.Count)
+            {
                 return false;
             }
 
@@ -99,7 +103,8 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Reverse(ref RevrsReader reader, int offset, int count)
     {
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
+        {
             Entry entry = reader.Read<Entry, Entry.Reverser>(
                 offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * i
             );
@@ -113,16 +118,19 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
-        emitter.Builder.Append($"!{Type}");
+        emitter.Builder.Append($"!h");
         emitter.NewLine();
 
-        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
+        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes())
+        {
             emitter.Builder.Append('{');
-            for (int i = 0; i < Count;) {
+            for (int i = 0; i < Count;)
+            {
                 var (hash, node) = this[i];
                 emitter.Builder.Append($"0x{hash:x2}: ");
                 emitter.EmitNode(node, root);
-                if (++i < Count) {
+                if (++i < Count)
+                {
                     emitter.Builder.Append(", ");
                 }
             }
@@ -131,8 +139,10 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
             return;
         }
 
-        foreach ((var hash, var node) in this) {
-            if (!emitter.IsIndented) {
+        foreach ((var hash, var node) in this)
+        {
+            if (!emitter.IsIndented)
+            {
                 emitter.NewLine();
             }
 
@@ -150,8 +160,10 @@ public readonly ref struct ImmutableBymlHashMap(Span<byte> data, int offset, int
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool HasContainerNodes()
     {
-        foreach ((_, var node) in this) {
-            if (node.Type.IsContainerType()) {
+        foreach ((_, var node) in this)
+        {
+            if (node.Type.IsContainerType())
+            {
                 return true;
             }
         }

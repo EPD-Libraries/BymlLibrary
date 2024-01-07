@@ -2,8 +2,12 @@
 
 public enum BymlNodeType : byte
 {
-    HashMap = 0x20, // ✔
-    RemappedHashMap = 0x30, // Unknown
+    // A better solution could be
+    // used for handling these map tyes
+    HashMap32 = 0x20, // ✔
+    HashMap64 = 0x21, // ✔
+    RelocatedHashMap32 = 0x30, // Unknown
+    RelocatedHashMap64 = 0x31, // Unknown
     String = 0xA0, // ✔
     Binary = 0xA1, // ✔
     BinaryAligned = 0xA2, // ✔

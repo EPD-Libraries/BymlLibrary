@@ -1,5 +1,6 @@
 ﻿using BymlLibrary.Extensions;
 using BymlLibrary.Nodes.Immutable.Containers;
+using BymlLibrary.Nodes.Immutable.Containers.RelocatedHashMap;
 using BymlLibrary.Structures;
 using Revrs;
 using Revrs.Extensions;
@@ -72,11 +73,19 @@ public readonly ref struct ImmutableByml
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ImmutableBymlHashMap GetHashMap()
+    public ImmutableBymlHashMap32 GetHashMap32()
     {
         ref BymlContainerNodeHeader header
-            = ref CheckContainerHeader(BymlNodeType.HashMap);
-        return new ImmutableBymlHashMap(_data, _offset, header.Count, header.Type);
+            = ref CheckContainerHeader(BymlNodeType.HashMap32);
+        return new ImmutableBymlHashMap32(_data, _offset, header.Count, header.Type);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ImmutableBymlHashMap64 GetHashMap64()
+    {
+        ref BymlContainerNodeHeader header
+            = ref CheckContainerHeader(BymlNodeType.HashMap64);
+        return new ImmutableBymlHashMap64(_data, _offset, header.Count, header.Type);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -205,10 +214,13 @@ public readonly ref struct ImmutableByml
         BymlContainerNodeHeader header = reader
             .Read<BymlContainerNodeHeader>(offset);
 
-        if (header.Type == BymlNodeType.HashMap) {
-            ImmutableBymlHashMap.Reverse(ref reader, offset, header.Count);
+        if (header.Type == BymlNodeType.HashMap32) {
+            ImmutableBymlHashMap32.Reverse(ref reader, offset, header.Count);
         }
-        else if (header.Type == BymlNodeType.RemappedHashMap) {
+        else if (header.Type == BymlNodeType.HashMap64) {
+            ImmutableBymlHashMap64.Reverse(ref reader, offset, header.Count);
+        }
+        else if (header.Type == BymlNodeType.RelocatedHashMap32) {
             throw new NotImplementedException();
         }
         else if (header.Type == BymlNodeType.Array) {

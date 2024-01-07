@@ -32,4 +32,8 @@
     <PackageReference Include="Syroot.Maths" Version="1.5.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Nodes\Immutable\Containers\HashMap\" />
+  </ItemGroup>
+
 </Project>
