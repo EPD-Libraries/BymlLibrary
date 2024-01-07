@@ -1,4 +1,4 @@
-﻿namespace BymlLibrary.Nodes.Immutable.Containers;
+﻿namespace BymlLibrary.Nodes.Immutable.Containers.HashMap;
 
 public readonly ref struct ImmutableBymlHashMap64Entry(ulong hash, Span<byte> data, int value, BymlNodeType type)
 {

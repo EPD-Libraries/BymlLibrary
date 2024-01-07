@@ -6,9 +6,9 @@ using Revrs.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace BymlLibrary.Nodes.Immutable.Containers;
+namespace BymlLibrary.Nodes.Immutable.Containers.HashMap;
 
-public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, int count, BymlNodeType type)
+public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, int count, BymlNodeType type)
 {
     /// <summary>
     /// Span of the BYMl data
@@ -42,11 +42,13 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     /// </summary>
     private readonly Span<BymlNodeType> _types = count == 0 ? []
         : data[(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count)..]
-            .ReadSpan<BymlNodeType>(count);
+            .ReadSpan<BymlNodeType>(count + 1);
 
-    public readonly ImmutableBymlHashMap64Entry this[int index] {
+    public readonly ImmutableBymlHashMap32Entry this[int index]
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
+        get
+        {
             Entry entry = _entries[index];
             return new(entry.Hash, _data, entry.Value, _types[index]);
         }
@@ -55,17 +57,17 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = SIZE)]
     private readonly struct Entry
     {
-        public const int SIZE = 0xC;
+        public const int SIZE = 8;
 
-        public readonly ulong Hash;
+        public readonly uint Hash;
         public readonly int Value;
 
         public class Reverser : IStructReverser
         {
             public static void Reverse(in Span<byte> slice)
             {
-                slice[0x0..0x8].Reverse();
-                slice[0x8..0xC].Reverse();
+                slice[0..4].Reverse();
+                slice[4..8].Reverse();
             }
         }
     }
@@ -75,12 +77,13 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
         => new(this);
 
     [method: MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ref struct Enumerator(ImmutableBymlHashMap64 container)
+    public ref struct Enumerator(ImmutableBymlHashMap32 container)
     {
-        private readonly ImmutableBymlHashMap64 _container = container;
+        private readonly ImmutableBymlHashMap32 _container = container;
         private int _index = -1;
 
-        public readonly ImmutableBymlHashMap64Entry Current {
+        public readonly ImmutableBymlHashMap32Entry Current
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _container[_index];
         }
@@ -88,7 +91,8 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (++_index >= _container.Count) {
+            if (++_index >= _container.Count)
+            {
                 return false;
             }
 
@@ -97,9 +101,21 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public SortedDictionary<uint, Byml> ToMutable(in ImmutableByml root)
+    {
+        SortedDictionary<uint, Byml> hashMap32 = [];
+        foreach ((var key, var value) in this) {
+            hashMap32[key] = Byml.FromImmutable(value, root);
+        }
+
+        return hashMap32;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Reverse(ref RevrsReader reader, int offset, int count)
     {
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++)
+        {
             Entry entry = reader.Read<Entry, Entry.Reverser>(
                 offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * i
             );
@@ -113,16 +129,19 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
-        emitter.Builder.Append($"!h64");
+        emitter.Builder.Append($"!h");
         emitter.NewLine();
 
-        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
+        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes())
+        {
             emitter.Builder.Append('{');
-            for (int i = 0; i < Count;) {
+            for (int i = 0; i < Count;)
+            {
                 var (hash, node) = this[i];
                 emitter.Builder.Append($"0x{hash:x2}: ");
                 emitter.EmitNode(node, root);
-                if (++i < Count) {
+                if (++i < Count)
+                {
                     emitter.Builder.Append(", ");
                 }
             }
@@ -131,8 +150,10 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             return;
         }
 
-        foreach ((var hash, var node) in this) {
-            if (!emitter.IsIndented) {
+        foreach ((var hash, var node) in this)
+        {
+            if (!emitter.IsIndented)
+            {
                 emitter.NewLine();
             }
 
@@ -150,8 +171,10 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool HasContainerNodes()
     {
-        foreach ((_, var node) in this) {
-            if (node.Type.IsContainerType()) {
+        foreach ((_, var node) in this)
+        {
+            if (node.Type.IsContainerType())
+            {
                 return true;
             }
         }
