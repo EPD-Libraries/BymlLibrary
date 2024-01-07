@@ -1,19 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Copyright>(c) exelix, Syroot, GingerAvalanche, and KillzXGaming, licensed under GPL-3.0-or-later</Copyright>
-    <TargetFramework>net7.0</TargetFramework>
-    <Authors>exelix, KillzXGaming, GingerAvalanche, and Syroot. (Updated by ArchLeaders)</Authors>
-    <Description>Updated version of KillzXGaming's fork of exelix's ByamlLibrary</Description>
-    <PackageProjectUrl>https://github.com/ArchLeaders/NCF-Library/tree/master/BymlLibrary</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/ArchLeaders/NCF-Library/tree/master/BymlLibrary</RepositoryUrl>
-    <PackageTags>byml;binary-yaml;botw;nintendo;zelda</PackageTags>
-    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	<VersionPrefix>1.1.4</VersionPrefix>
+    <TargetFramework>net8.0</TargetFramework>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -38,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Revrs" Version="1.0.1" />
     <PackageReference Include="SharpYaml" Version="2.1.0" />
     <PackageReference Include="Syroot.BinaryData" Version="5.2.2" />
     <PackageReference Include="Syroot.Maths" Version="1.5.3" />

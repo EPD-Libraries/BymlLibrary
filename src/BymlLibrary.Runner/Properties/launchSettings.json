@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BymlLibrary.Runner": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\bin\\Byml-v7\\USen.byml\""
+    }
+  }
+}
