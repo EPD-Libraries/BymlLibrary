@@ -34,14 +34,14 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
     /// Container offset entries
     /// </summary>
     private readonly Span<Entry> _entries = count == 0 ? []
-        : data[(offset + BymlContainerNodeHeader.SIZE)..]
+        : data[(offset + BymlContainer.SIZE)..]
             .ReadSpan<Entry>(count);
 
     /// <summary>
     /// Container offset entries
     /// </summary>
     private readonly Span<BymlNodeType> _types = count == 0 ? []
-        : data[(offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * count))..]
+        : data[(offset + BymlContainer.SIZE + (Entry.SIZE * count))..]
             .ReadSpan<BymlNodeType>(count + 1);
 
     public readonly ImmutableBymlHashMap32Entry this[int index] {
@@ -108,21 +108,6 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
-    {
-        for (int i = 0; i < count; i++) {
-            Entry entry = reader.Read<Entry, Entry.Reverser>(
-                offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * i)
-            );
-
-            ImmutableByml.ReverseNode(ref reader, entry.Value,
-                reader.Read<BymlNodeType>(offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * count) + i),
-                reversedOffsets
-            );
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
         emitter.Builder.Append($"!h");
@@ -169,5 +154,20 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
         }
 
         return false;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
+    {
+        for (int i = 0; i < count; i++) {
+            Entry entry = reader.Read<Entry, Entry.Reverser>(
+                offset + BymlContainer.SIZE + (Entry.SIZE * i)
+            );
+
+            ImmutableByml.ReverseNode(ref reader, entry.Value,
+                reader.Read<BymlNodeType>(offset + BymlContainer.SIZE + (Entry.SIZE * count) + i),
+                reversedOffsets
+            );
+        }
     }
 }

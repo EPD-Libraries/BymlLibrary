@@ -26,7 +26,7 @@ public unsafe readonly ref struct ImmutableBymlStringTable(Span<byte> data, int 
     /// The string offsets in this container
     /// </summary>
     private readonly ReadOnlySpan<int> _offsets
-        = data[(offset + sizeof(BymlContainerNodeHeader))..].ReadSpan<int>(++count);
+        = data[(offset + sizeof(BymlContainer))..].ReadSpan<int>(++count);
 
     public readonly Span<byte> this[int index] {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

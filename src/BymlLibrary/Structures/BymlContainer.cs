@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace BymlLibrary.Structures;
 
 [StructLayout(LayoutKind.Explicit, Pack = 0, Size = SIZE)]
-public struct BymlContainerNodeHeader
+public struct BymlContainer
 {
     internal const int SIZE = 4;
 

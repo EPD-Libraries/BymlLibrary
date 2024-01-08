@@ -50,7 +50,7 @@ public readonly ref struct ImmutableByml
 
         if (Header.KeyTableOffset > 0) {
             reader.Seek(Header.KeyTableOffset);
-            ref BymlContainerNodeHeader keyTableHeader
+            ref BymlContainer keyTableHeader
                 = ref CheckContainerHeader(ref reader, BymlNodeType.StringTable);
             KeyTable = new(_data, Header.KeyTableOffset, keyTableHeader.Count);
 
@@ -61,7 +61,7 @@ public readonly ref struct ImmutableByml
 
         if (Header.StringTableOffset > 0) {
             reader.Seek(Header.StringTableOffset);
-            ref BymlContainerNodeHeader stringTableHeader
+            ref BymlContainer stringTableHeader
                 = ref CheckContainerHeader(ref reader, BymlNodeType.StringTable);
             StringTable = new(_data, Header.StringTableOffset, stringTableHeader.Count);
 
@@ -81,8 +81,8 @@ public readonly ref struct ImmutableByml
             ReverseContainer(ref reader, Header.RootNodeOffset, reversedOffsets);
         }
 
-        ref BymlContainerNodeHeader rootNodeHeader
-            = ref _data[(_offset = Header.RootNodeOffset)..].Read<BymlContainerNodeHeader>();
+        ref BymlContainer rootNodeHeader
+            = ref _data[(_offset = Header.RootNodeOffset)..].Read<BymlContainer>();
         Type = rootNodeHeader.Type;
     }
 
@@ -96,7 +96,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ImmutableBymlHashMap32 GetHashMap32()
     {
-        ref BymlContainerNodeHeader header
+        ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap32);
         return new ImmutableBymlHashMap32(_data, _offset, header.Count, header.Type);
     }
@@ -104,7 +104,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ImmutableBymlHashMap64 GetHashMap64()
     {
-        ref BymlContainerNodeHeader header
+        ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap64);
         return new ImmutableBymlHashMap64(_data, _offset, header.Count, header.Type);
     }
@@ -112,7 +112,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ImmutableBymlArray GetArray()
     {
-        ref BymlContainerNodeHeader header
+        ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.Array);
         return new ImmutableBymlArray(_data, _offset, header.Count);
     }
@@ -120,7 +120,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ImmutableBymlMap GetMap()
     {
-        ref BymlContainerNodeHeader header
+        ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.Map);
         return new ImmutableBymlMap(_data, _offset, header.Count);
     }
@@ -128,7 +128,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly ImmutableBymlStringTable GetStringTable()
     {
-        ref BymlContainerNodeHeader header
+        ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.StringTable);
         return new(_data, _offset, header.Count);
     }
@@ -237,8 +237,8 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void ReverseContainer(ref RevrsReader reader, int offset, in HashSet<int> reversedOffsets)
     {
-        BymlContainerNodeHeader header = reader
-            .Read<BymlContainerNodeHeader, BymlContainerNodeHeader.Reverser>(offset);
+        BymlContainer header = reader
+            .Read<BymlContainer, BymlContainer.Reverser>(offset);
 
         if (header.Type == BymlNodeType.HashMap32) {
             ImmutableBymlHashMap32.Reverse(ref reader, offset, header.Count, reversedOffsets);
@@ -246,24 +246,17 @@ public readonly ref struct ImmutableByml
         else if (header.Type == BymlNodeType.HashMap64) {
             ImmutableBymlHashMap64.Reverse(ref reader, offset, header.Count, reversedOffsets);
         }
-        else if (header.Type == BymlNodeType.RelocatedHashMap32) {
-            throw new NotImplementedException();
-        }
         else if (header.Type == BymlNodeType.Array) {
             ImmutableBymlArray.Reverse(ref reader, offset, header.Count, reversedOffsets);
         }
         else if (header.Type == BymlNodeType.Map) {
             ImmutableBymlMap.Reverse(ref reader, offset, header.Count, reversedOffsets);
         }
-        else if (header.Type == BymlNodeType.RemappedMap) {
-            throw new NotImplementedException();
-        }
-        else if (header.Type == BymlNodeType.RelocatedStringTable) {
-            throw new NotImplementedException();
-        }
-        else if (header.Type == BymlNodeType.MonoTypedArray) {
-            throw new NotImplementedException();
-        }
+
+        throw new NotImplementedException($"""
+            The container type '{header.Type}' has no implemented reverser
+            """
+        );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -282,19 +275,19 @@ public readonly ref struct ImmutableByml
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ref BymlContainerNodeHeader CheckContainerHeader(BymlNodeType expected)
+    private ref BymlContainer CheckContainerHeader(BymlNodeType expected)
     {
-        ref BymlContainerNodeHeader header = ref _data[_offset..]
-            .Read<BymlContainerNodeHeader>();
+        ref BymlContainer header = ref _data[_offset..]
+            .Read<BymlContainer>();
         header.Type.Assert(expected);
         return ref header;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ref BymlContainerNodeHeader CheckContainerHeader(ref RevrsReader reader, BymlNodeType expected)
+    private static ref BymlContainer CheckContainerHeader(ref RevrsReader reader, BymlNodeType expected)
     {
-        ref BymlContainerNodeHeader header
-            = ref reader.Read<BymlContainerNodeHeader, BymlContainerNodeHeader.Reverser>();
+        ref BymlContainer header
+            = ref reader.Read<BymlContainer, BymlContainer.Reverser>();
         header.Type.Assert(expected);
         return ref header;
     }
