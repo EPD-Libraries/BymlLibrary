@@ -1,5 +1,4 @@
-﻿using BymlLibrary.Extensions;
-using System.Buffers;
+﻿using System.Buffers;
 using System.Text;
 
 namespace BymlLibrary.Yaml;

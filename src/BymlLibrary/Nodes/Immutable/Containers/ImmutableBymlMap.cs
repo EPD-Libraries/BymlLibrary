@@ -48,14 +48,12 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
         private readonly int _indexAndNodeType;
         public readonly int Value;
 
-        public readonly int KeyIndex
-        {
+        public readonly int KeyIndex {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _indexAndNodeType & 0xFFFFFF;
         }
 
-        public readonly BymlNodeType Type
-        {
+        public readonly BymlNodeType Type {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (BymlNodeType)(_indexAndNodeType >> 24);
         }
@@ -103,7 +101,7 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
     {
         for (int i = 0; i < count; i++) {
-            reader.Seek(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * i);
+            reader.Seek(offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * i));
             reader.Read(3).Reverse();
             BymlNodeType type = reader.Read<BymlNodeType>();
             int value = reader.Read<int>();
@@ -127,7 +125,7 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
                     emitter.Builder.Append(", ");
                 }
             }
-        
+
             emitter.Builder.Append('}');
             return;
         }

@@ -109,25 +109,33 @@ public class BymlNode : IEquatable<BymlNode>
     public override bool Equals(object other) => Equals(other as BymlNode);
     public virtual bool Equals(BymlNode other)
     {
-        if (this is null || other is null || type != other.type)
+        if (this is null || other is null || type != other.type) {
             return false;
+        }
+
         if (IsContainerType()) {
             switch (type) {
                 case NodeType.Array:
-                    if (Array.Count != other.Array.Count)
+                    if (Array.Count != other.Array.Count) {
                         return false;
+                    }
+
                     for (int i = 0; i < Array.Count; i++) {
-                        if (Array[i] != other.Array[i])
+                        if (Array[i] != other.Array[i]) {
                             return false;
+                        }
                     }
                     return true;
                 case NodeType.Hash:
-                    if (Hash.Count != other.Hash.Count)
+                    if (Hash.Count != other.Hash.Count) {
                         return false;
+                    }
+
                     foreach ((string key, BymlNode child) in Hash) {
                         if (!other.Hash.TryGetValue(key, out BymlNode child2) ||
-                            child != child2)
+                            child != child2) {
                             return false;
+                        }
                     }
                     return true;
                 case NodeType.StringArray:

@@ -150,7 +150,7 @@ public readonly ref struct ImmutableByml
         int size = _data[_offset..].Read<int>();
         alignment = _data[(_offset + sizeof(int))..].Read<int>();
 
-        int offset = _offset + sizeof(int) * 2;
+        int offset = _offset + (sizeof(int) * 2);
         return _data[offset..(offset + size)];
     }
 

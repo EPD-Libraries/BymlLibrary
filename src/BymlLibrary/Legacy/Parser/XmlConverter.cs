@@ -48,8 +48,10 @@ internal static class XmlConverter
         byml.SupportPaths = n.Attributes["Value"].Value.ToLower() == "true";
 
         n = xml.SelectSingleNode("/Root/BymlRoot");
-        if (n.ChildNodes.Count != 1)
+        if (n.ChildNodes.Count != 1) {
             throw new Exception("A byml can have only one root");
+        }
+
         byml.RootNode = ParseNode(n.FirstChild);
 
         return byml;
@@ -62,8 +64,10 @@ internal static class XmlConverter
     static void WriteNode(dynamic node, string name, XmlTextWriter xmlWriter)
     {
         if (node == null) {
-            if (name == null)
+            if (name == null) {
                 return;
+            }
+
             xmlWriter.WriteStartElement("NULL");
             xmlWriter.WriteAttributeString("N", name);
             xmlWriter.WriteEndElement();
@@ -76,8 +80,9 @@ internal static class XmlConverter
         }
         else {
             xmlWriter.WriteStartElement(GetNodeName(node));
-            if (name != null)
+            if (name != null) {
                 xmlWriter.WriteAttributeString("N", name);
+            }
 
             xmlWriter.WriteAttributeString("V", node.ToString());
             xmlWriter.WriteEndElement();
@@ -87,11 +92,13 @@ internal static class XmlConverter
     static void WriteArrNode(IList<dynamic> node, string name, XmlTextWriter xmlWriter)
     {
         xmlWriter.WriteStartElement(GetNodeName(node));
-        if (name != null)
+        if (name != null) {
             xmlWriter.WriteAttributeString("N", name);
+        }
 
-        for (int i = 0; i < node.Count; i++)
+        for (int i = 0; i < node.Count; i++) {
             WriteNode(node[i], null, xmlWriter);
+        }
 
         xmlWriter.WriteEndElement();
     }
@@ -99,12 +106,14 @@ internal static class XmlConverter
     static void WriteDictNode(IDictionary<string, dynamic> node, string name, XmlTextWriter xmlWriter)
     {
         xmlWriter.WriteStartElement(GetNodeName(node));
-        if (name != null)
+        if (name != null) {
             xmlWriter.WriteAttributeString("N", name);
+        }
 
         var keys = node.Keys.ToArray();
-        for (int i = 0; i < keys.Length; i++)
+        for (int i = 0; i < keys.Length; i++) {
             WriteNode(node[keys[i]], keys[i], xmlWriter);
+        }
 
         xmlWriter.WriteEndElement();
     }
@@ -119,8 +128,9 @@ internal static class XmlConverter
 
     internal static dynamic ParseNode(XmlNode xmlNode)
     {
-        if (xmlNode.Name == "NULL")
+        if (xmlNode.Name == "NULL") {
             return null;
+        }
 
         NodeType nodeType = (NodeType)byte.Parse(xmlNode.Name[1..]);
 
@@ -145,8 +155,9 @@ internal static class XmlConverter
     internal static IList<dynamic> ParseArrNode(XmlNode n)
     {
         List<dynamic> res = new();
-        for (int i = 0; i < n.ChildNodes.Count; i++)
+        for (int i = 0; i < n.ChildNodes.Count; i++) {
             res.Add(ParseNode(n.ChildNodes[i]));
+        }
 
         return res;
     }

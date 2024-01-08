@@ -41,14 +41,12 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     /// Container offset entries
     /// </summary>
     private readonly Span<BymlNodeType> _types = count == 0 ? []
-        : data[(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count)..]
+        : data[(offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * count))..]
             .ReadSpan<BymlNodeType>(count);
 
-    public readonly ImmutableBymlHashMap64Entry this[int index]
-    {
+    public readonly ImmutableBymlHashMap64Entry this[int index] {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
+        get {
             Entry entry = _entries[index];
             return new(entry.Hash, _data, entry.Value, _types[index]);
         }
@@ -82,8 +80,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
         private readonly ImmutableBymlHashMap64 _container = container;
         private int _index = -1;
 
-        public readonly ImmutableBymlHashMap64Entry Current
-        {
+        public readonly ImmutableBymlHashMap64Entry Current {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _container[_index];
         }
@@ -91,8 +88,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            if (++_index >= _container.Count)
-            {
+            if (++_index >= _container.Count) {
                 return false;
             }
 
@@ -114,14 +110,13 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
     {
-        for (int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
             Entry entry = reader.Read<Entry, Entry.Reverser>(
-                offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * i
+                offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * i)
             );
 
             ImmutableByml.ReverseNode(ref reader, entry.Value,
-                reader.Read<BymlNodeType>(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count + i),
+                reader.Read<BymlNodeType>(offset + BymlContainerNodeHeader.SIZE + (Entry.SIZE * count) + i),
                 reversedOffsets
             );
         }
@@ -133,16 +128,13 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
         emitter.Builder.Append($"!h64");
         emitter.NewLine();
 
-        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes())
-        {
+        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
             emitter.Builder.Append('{');
-            for (int i = 0; i < Count;)
-            {
+            for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];
                 emitter.Builder.Append($"0x{hash:x2}: ");
                 emitter.EmitNode(node, root);
-                if (++i < Count)
-                {
+                if (++i < Count) {
                     emitter.Builder.Append(", ");
                 }
             }
@@ -151,10 +143,8 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             return;
         }
 
-        foreach ((var hash, var node) in this)
-        {
-            if (!emitter.IsIndented)
-            {
+        foreach ((var hash, var node) in this) {
+            if (!emitter.IsIndented) {
                 emitter.NewLine();
             }
 
@@ -172,10 +162,8 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool HasContainerNodes()
     {
-        foreach ((_, var node) in this)
-        {
-            if (node.Type.IsContainerType())
-            {
+        foreach ((_, var node) in this) {
+            if (node.Type.IsContainerType()) {
                 return true;
             }
         }

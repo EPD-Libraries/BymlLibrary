@@ -7,13 +7,13 @@ internal static class XmlTypeConverter
     public static readonly Dictionary<Type, ConvertMethod> StringToNodeTable = new()
     {
             { typeof(string) , (s) => s },
-            { typeof(int) , (s) => (int.Parse(s)) },
-            { typeof(uint) , (s) =>(uint.Parse(s)) },
-            { typeof(long) , (s) => (long.Parse(s)) },
-            { typeof(ulong) , (s) => (ulong.Parse(s)) },
-            { typeof(double) , (s) =>(double.Parse(s)) },
-            { typeof(float) , (s) => (float.Parse(s)) },
-            { typeof(bool) , (s) => (bool.Parse(s)) },
+            { typeof(int) , (s) => int.Parse(s) },
+            { typeof(uint) , (s) =>uint.Parse(s) },
+            { typeof(long) , (s) => long.Parse(s) },
+            { typeof(ulong) , (s) => ulong.Parse(s) },
+            { typeof(double) , (s) =>double.Parse(s) },
+            { typeof(float) , (s) => float.Parse(s) },
+            { typeof(bool) , (s) => bool.Parse(s) },
         };
 
     public static dynamic ConvertValue(Type t, string value) => StringToNodeTable[t](value);

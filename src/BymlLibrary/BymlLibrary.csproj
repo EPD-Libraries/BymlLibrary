@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,10 +31,6 @@
     <PackageReference Include="SharpYaml" Version="2.1.0" />
     <PackageReference Include="Syroot.BinaryData" Version="5.2.2" />
     <PackageReference Include="Syroot.Maths" Version="1.5.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Nodes\Immutable\Containers\HashMap\" />
   </ItemGroup>
 
 </Project>

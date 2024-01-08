@@ -16,19 +16,23 @@ internal class BymlReader : BymlFile
         using (BinaryStream reader = new(stream, encoding: encoding, leaveOpen: true)) {
             ushort magic = reader.ReadUInt16();
 
-            if (magic == 0x5942)
+            if (magic == 0x5942) {
                 Endianness = Endian.Big;
-            else if (magic == 0x4259)
+            }
+            else if (magic == 0x4259) {
                 Endianness = Endian.Little;
-            else
+            }
+            else {
                 throw new BymlException($"Could not decompile BYML. Invalid header '{magic}'.");
+            }
 
             reader.ByteConverter = ByteConverter.GetConverter(Endianness);
 
             // Get BYML version
             Version = reader.ReadUInt16();
-            if (Version < 2 || Version > 4)
+            if (Version < 2 || Version > 4) {
                 throw new BymlException($"Unexpected version {Version}");
+            }
 
             // Read the name array, holding strings referenced by index for the names of other nodes.
             uint offset = reader.ReadUInt32();
@@ -86,10 +90,12 @@ internal class BymlReader : BymlFile
 
         foreach (NodeType type in types) {
             BymlNode value = ReadNode(reader, type);
-            if (type.IsEnumerable())
+            if (type.IsEnumerable()) {
                 node.Array.Add(ReadEnumerableNode(reader, value.UInt));
-            else
+            }
+            else {
                 node.Array.Add(value);
+            }
         }
 
         return node;
@@ -108,15 +114,18 @@ internal class BymlReader : BymlFile
             string name = NameArray.Array[nodeNameIndex].String;
             BymlNode value = ReadNode(reader, type);
 
-            if (type.IsEnumerable())
+            if (type.IsEnumerable()) {
                 node.Hash.Add(name, ReadEnumerableNode(reader, value.UInt));
-            else
+            }
+            else {
                 node.Hash.Add(name, value);
+            }
         }
 
         // Read the offset enumerable nodes in the order of how they appear in the file.
-        foreach ((uint key, string value) in enumerables)
+        foreach ((uint key, string value) in enumerables) {
             node.Hash.Add(value, ReadEnumerableNode(reader, key));
+        }
 
         return node;
     }

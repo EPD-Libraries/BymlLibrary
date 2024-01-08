@@ -32,8 +32,10 @@ public static class Crc32
     /// <returns>Checksum</returns>
     public static uint Compute(string text, Encoding encoding)
     {
-        if (string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(text)) {
             return 0;
+        }
+
         byte[] bytes = encoding.GetBytes(text);
         return Compute(bytes);
     }
@@ -51,7 +53,7 @@ public static class Crc32
             crc = (crc >> 8) ^ Table[index];
         }
 
-        return unchecked((~crc));
+        return unchecked(~crc);
     }
 
     static uint[] CreateTable()

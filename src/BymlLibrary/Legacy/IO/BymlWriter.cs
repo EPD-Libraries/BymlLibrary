@@ -9,8 +9,9 @@ internal class BymlWriter
     {
         byte[] bytes;
         using (BinaryStream stream = new(new MemoryStream(), ByteConverter.GetConverter(byml.Endianness), encoding)) {
-            if (byml.Version < 2 || byml.Version > 4)
+            if (byml.Version < 2 || byml.Version > 4) {
                 throw new InvalidDataException($"Invalid BYML version {byml.Version}");
+            }
 
             WriteContext context = new(byml.RootNode) { Writer = stream };
 
@@ -68,15 +69,19 @@ internal class WriteContext
         void traverse(BymlNode node)
         {
             NodeType type = node.Type;
-            if (IsNonInlineType(type))
+            if (IsNonInlineType(type)) {
                 num_non_inline_nodes++;
+            }
+
             switch (type) {
                 case NodeType.String:
                     string_table.Add(node.String);
                     break;
                 case NodeType.Array:
-                    foreach (BymlNode child in node.Array)
+                    foreach (BymlNode child in node.Array) {
                         traverse(child);
+                    }
+
                     break;
                 case NodeType.Hash:
                     foreach ((string key, BymlNode child) in node.Hash) {
@@ -162,11 +167,15 @@ internal class WriteContext
             case NodeType.Array:
                 Writer.Write((byte)NodeType.Array);
                 Writer.WriteUInt24((uint)node.Array.Count);
-                foreach (BymlNode item in node.Array)
+                foreach (BymlNode item in node.Array) {
                     Writer.WriteByte((byte)item.Type);
+                }
+
                 Writer.Align(4);
-                foreach (BymlNode item in node.Array)
+                foreach (BymlNode item in node.Array) {
                     write_container_item(item);
+                }
+
                 break;
             case NodeType.Hash:
                 SortedDictionary<string, BymlNode> hash = node.Hash;
@@ -227,12 +236,12 @@ internal class WriteContext
 
         int i = 0;
         foreach (string s in table.Strings) {
-            Writer.WriteAt((uint)(offset_table_offset + sizeof(uint) * i), (uint)Writer.Position - start);
+            Writer.WriteAt((uint)(offset_table_offset + (sizeof(uint) * i)), (uint)Writer.Position - start);
             Writer.WriteBytes(Writer.Encoding.GetBytes($"{s}\0"));
             i++;
         }
 
-        Writer.WriteAt((uint)(offset_table_offset + sizeof(uint) * i), (uint)Writer.Position - start);
+        Writer.WriteAt((uint)(offset_table_offset + (sizeof(uint) * i)), (uint)Writer.Position - start);
         Writer.Align(4);
     }
 }
@@ -247,20 +256,26 @@ internal class StringTable
     public bool IsEmpty() => sorted_strings.Count == 0;
     public void Add(string str)
     {
-        if (built)
+        if (built) {
             throw new InvalidOperationException("Can't add strings after the table has been built");
+        }
+
         sorted_strings.Add(str);
     }
     public string GetString(uint index)
     {
-        if (!built)
+        if (!built) {
             throw new InvalidOperationException("Table hasn't been built yet, strings are in the wrong order");
+        }
+
         return sorted_strings.ToList()[(int)index];
     }
     public uint GetIndex(string str)
     {
-        if (!built)
+        if (!built) {
             throw new InvalidOperationException("Table hasn't been built yet, strings are in the wrong order");
+        }
+
         return hash_table[str];
     }
 

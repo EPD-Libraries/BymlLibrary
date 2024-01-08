@@ -11,8 +11,9 @@ internal class Resource
         Assembly assembly = Assembly.GetCallingAssembly();
         Stream resStream = assembly.GetManifestResourceStream("BymlLibrary." + resourceName);
 
-        if (resStream == null)
+        if (resStream == null) {
             return;
+        }
 
         using BinaryReader reader = new(resStream);
         Data = reader.ReadBytes((int)resStream.Length);

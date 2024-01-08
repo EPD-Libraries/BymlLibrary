@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using BymlLibrary.Legacy.IO;
+﻿using BymlLibrary.Legacy.IO;
 using BymlLibrary.Legacy.Parser;
+using Newtonsoft.Json;
 using Syroot.BinaryData.Core;
 using System.Text;
 

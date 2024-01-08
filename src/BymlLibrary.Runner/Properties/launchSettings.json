@@ -2,7 +2,7 @@
   "profiles": {
     "BymlLibrary.Runner": {
       "commandName": "Project",
-      "commandLineArgs": "\"D:\\bin\\Byml-v7\\SettingList.byml\""
+      "commandLineArgs": "\"D:\\bin\\Byml-v7\\be_ActorInfo.product.byml\""
     }
   }
 }

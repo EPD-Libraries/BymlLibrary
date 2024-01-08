@@ -44,8 +44,9 @@ public class YamlConverter
 
         YamlNode root = yaml.Documents[0].RootNode;
 
-        if (root is YamlMappingNode || root is YamlSequenceNode)
+        if (root is YamlMappingNode || root is YamlSequenceNode) {
             byml.RootNode = ParseNode(root);
+        }
 
         ReferenceNodes.Clear();
 
@@ -56,14 +57,16 @@ public class YamlConverter
     {
         if (node is YamlMappingNode castMappingNode) {
             var values = new Dictionary<string, BymlNode>();
-            if (IsValidReference(node))
+            if (IsValidReference(node)) {
                 ReferenceNodes.Add(node.Tag, new BymlNode(values));
+            }
 
             foreach (var child in castMappingNode.Children) {
                 var key = ((YamlScalarNode)child.Key).Value;
                 var tag = ((YamlScalarNode)child.Key).Tag;
-                if (tag == "!h")
+                if (tag == "!h") {
                     key = Crc32.Compute(key).ToString("x");
+                }
 
                 values.Add(key, ParseNode(child.Value));
             }
@@ -72,11 +75,13 @@ public class YamlConverter
         else if (node is YamlSequenceNode castSequenceNode) {
 
             var values = new List<BymlNode>();
-            if (IsValidReference(node))
+            if (IsValidReference(node)) {
                 ReferenceNodes.Add(node.Tag, new BymlNode(values));
+            }
 
-            foreach (var child in castSequenceNode.Children)
+            foreach (var child in castSequenceNode.Children) {
                 values.Add(ParseNode(child));
+            }
 
             return new BymlNode(values);
         }
@@ -85,8 +90,9 @@ public class YamlConverter
             string tag = castScalarNode.Value.Replace("!refTag=", string.Empty);
             Debug.WriteLine($"refNode {tag} {ReferenceNodes.ContainsKey(tag)}");
 
-            if (ReferenceNodes.ContainsKey(tag))
+            if (ReferenceNodes.ContainsKey(tag)) {
                 return ReferenceNodes[tag];
+            }
             else {
                 Console.WriteLine("Failed to find reference node! " + tag);
                 return null;
@@ -231,8 +237,9 @@ public class YamlConverter
 
         foreach (var list in hashLists) {
             string hashList = new Resource($"Legacy.Data.{list}").ToString();
-            foreach (string hashStr in hashList.Split('\n'))
+            foreach (string hashStr in hashList.Split('\n')) {
                 CheckHash(ref hashes, hashStr);
+            }
         }
 
         return hashes;
@@ -241,8 +248,9 @@ public class YamlConverter
     private static void CheckHash(ref Dictionary<uint, string> hashes, string hashStr)
     {
         uint hash = Crc32.Compute(hashStr);
-        if (!hashes.ContainsKey(hash))
+        if (!hashes.ContainsKey(hash)) {
             hashes.Add(hash, hashStr);
+        }
     }
 
     public static bool IsHash(string k) => k != null && IsHex(k.ToArray());
@@ -251,12 +259,13 @@ public class YamlConverter
         bool isHex;
 
         foreach (var c in chars) {
-            isHex = ((c >= '0' && c <= '9') ||
+            isHex = (c >= '0' && c <= '9') ||
                      (c >= 'a' && c <= 'f') ||
-                     (c >= 'A' && c <= 'F'));
+                     (c >= 'A' && c <= 'F');
 
-            if (!isHex)
+            if (!isHex) {
                 return false;
+            }
         }
 
         return true;
