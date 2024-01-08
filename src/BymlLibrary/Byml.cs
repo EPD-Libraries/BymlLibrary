@@ -36,18 +36,14 @@ public enum BymlNodeType : byte
 public sealed class Byml
 {
     /// <summary>
-    /// <c>BY</c>
-    /// </summary>
-    internal const ushort BYML_MAGIC = 0x5942;
-
-    /// <summary>
     /// <c>YB</c>
     /// </summary>
-    internal const ushort BYML_MAGIC_LE = 0x4259;
+    internal const ushort BYML_MAGIC = 0x4259;
 
     private readonly object? _value;
 
     public BymlNodeType Type { get; set; }
+    public Endianness Endianness { get; set; }
 
     public static Byml FromBinary(Span<byte> data)
     {
@@ -58,7 +54,7 @@ public sealed class Byml
 
     public static Byml FromImmutable(in ImmutableByml byml, in ImmutableByml root)
     {
-        return byml.Type switch {
+        Byml result = byml.Type switch {
             BymlNodeType.HashMap32
                 => new(byml.GetHashMap32().ToMutable(root)),
             BymlNodeType.HashMap64
@@ -94,6 +90,16 @@ public sealed class Byml
                 Invalid or unsupported node type '{byml.Type}'
                 """)
         };
+
+        result.Endianness = byml.Header.Magic == BYML_MAGIC
+            ? Endianness.Little : Endianness.Big;
+        return result;
+    }
+
+    public void WriteBinary(in Stream stream, Endianness endianness)
+    {
+        RevrsWriter writer = new(stream, endianness);
+        
     }
 
     public Byml(SortedDictionary<uint, Byml>? hashMap32)
@@ -210,7 +216,7 @@ public sealed class Byml
         => Get<byte[]>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public (byte[], int) GetBinaryAligned()
+    public (byte[] Data, int Alignment) GetBinaryAligned()
         => Get<(byte[], int)>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -12,7 +12,7 @@ RevrsReader reader = new(buffer);
 ImmutableByml immutableByml = new(ref reader);
 
 YamlEmitter emitter = new();
-emitter.Emit(ref immutableByml);
+emitter.Emit(immutableByml);
 
 File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", emitter.Builder.ToString());
 

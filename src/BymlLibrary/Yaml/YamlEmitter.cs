@@ -17,7 +17,7 @@ public class YamlEmitter
     public bool IsIndented { get; set; } = true;
     public bool IsInline { get; set; } = true;
 
-    public void Emit(ref ImmutableByml root)
+    public void Emit(in ImmutableByml root)
     {
         EmitNode(root, root);
     }
@@ -38,7 +38,12 @@ public class YamlEmitter
             Builder.Append(Convert.ToBase64String(byml.GetBinary()));
         }
         else if (byml.Type == BymlNodeType.BinaryAligned) {
-
+            Builder.Append("!!file {Alignment: ");
+            Span<byte> data = byml.GetBinaryAligned(out int alignment);
+            Builder.Append(alignment);
+            Builder.Append(", Data: ");
+            Builder.Append(Convert.ToBase64String(data));
+            Builder.Append('}');
         }
         else if (byml.Type == BymlNodeType.Array) {
             byml.GetArray().EmitYaml(this, root);
@@ -50,15 +55,6 @@ public class YamlEmitter
             throw new NotSupportedException($"""
                 YAML serialization for '{byml.Type}' nodes is not supported.
                 """);
-        }
-        else if (byml.Type == BymlNodeType.RemappedMap) {
-            // TODO: RemappedMap support
-        }
-        else if (byml.Type == BymlNodeType.RelocatedStringTable) {
-            // TODO: RelocatedStringTable support
-        }
-        else if (byml.Type == BymlNodeType.MonoTypedArray) {
-            // TODO: MonoTypedArray support
         }
         else if (byml.Type == BymlNodeType.Bool) {
             Builder.Append(byml.GetBool());
