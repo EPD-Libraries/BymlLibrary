@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using BymlLibrary.Extensions;
+using System.Buffers;
 using System.Text;
 
 namespace BymlLibrary.Yaml;
@@ -95,13 +96,13 @@ public class YamlEmitter
     {
         if (str.ContainsAny(SpecialChars)) {
             Builder.Append('\'');
-            AppendUtf8Bytes(str);
+            Builder.Append(str.ToManaged());
             Builder.Append('\'');
             return;
         }
 
         if (!str.Contains(NEWLINE_CHAR_UTF8)) {
-            AppendUtf8Bytes(str);
+            Builder.Append(str.ToManaged());
             return;
         }
 
@@ -111,24 +112,11 @@ public class YamlEmitter
         while ((index = str[index..].IndexOf(NEWLINE_CHAR_UTF8)) > -1) {
             Builder.AppendLine("|-");
             IndentLine();
-            AppendUtf8Bytes(str[..index]);
+            Builder.Append(str[..index].ToManaged());
             Builder.Append(NEWLINE_CHAR);
         }
 
         Level--;
-    }
-
-    private unsafe void AppendUtf8Bytes(Span<byte> str)
-    {
-        // TODO: Check that this is actually
-        // faster than allocating a string.
-        for (int i = 0; i < str.Length; i++) {
-            if (str[i] == 0) {
-                break;
-            }
-
-            Builder.Append((char)str[i]);
-        }
     }
 
     public void IndentLine(int offset = 0)
