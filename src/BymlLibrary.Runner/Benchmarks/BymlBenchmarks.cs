@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BymlLibrary.Legacy;
+using BymlLibrary.Yaml;
 using Revrs;
 
 namespace BymlLibrary.Runner.Benchmarks;
@@ -35,6 +36,16 @@ public class BymlBenchmarks
     // {
     //     _byml.ToBinary();
     // }
+
+    [Benchmark]
+    public void ToYaml()
+    {
+        RevrsReader reader = new(_buffer);
+        ImmutableByml byml = new(ref reader);
+        YamlEmitter emitter = new();
+        emitter.Emit(ref byml);
+        string _ = emitter.Builder.ToString();
+    }
 
     [Benchmark]
     public void LegacyRead()
