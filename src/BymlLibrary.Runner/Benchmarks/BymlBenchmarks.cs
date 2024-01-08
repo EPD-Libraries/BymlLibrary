@@ -31,20 +31,19 @@ public class BymlBenchmarks
         ImmutableByml _ = new(ref reader);
     }
 
-    // [Benchmark]
-    // public void Write()
-    // {
-    //     _byml.ToBinary();
-    // }
+    [Benchmark]
+    public void Write()
+    {
+        using MemoryStream ms = new();
+        _byml.WriteBinary(ms, _byml.Endianness);
+    }
 
     [Benchmark]
     public void ToYaml()
     {
         RevrsReader reader = new(_buffer);
         ImmutableByml byml = new(ref reader);
-        YamlEmitter emitter = new();
-        emitter.Emit(ref byml);
-        string _ = emitter.Builder.ToString();
+        string _ = byml.ToYaml();
     }
 
     [Benchmark]

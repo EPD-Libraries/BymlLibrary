@@ -2,6 +2,7 @@
 using BymlLibrary.Nodes.Immutable.Containers;
 using BymlLibrary.Nodes.Immutable.Containers.HashMap;
 using BymlLibrary.Structures;
+using BymlLibrary.Yaml;
 using Revrs;
 using Revrs.Extensions;
 using System.Runtime.CompilerServices;
@@ -33,12 +34,12 @@ public readonly ref struct ImmutableByml
         reader.Endianness = Endianness.Little;
         Header = reader.Read<BymlHeader, BymlHeader.Reverser>();
 
-        if (Header.Magic != Byml.BYML_MAGIC_LE) {
+        if (Header.Magic != Byml.BYML_MAGIC) {
             reader.Endianness = Endianness.Big;
             Header = reader.Read<BymlHeader, BymlHeader.Reverser>(0);
         }
 
-        if (Header.Magic is not Byml.BYML_MAGIC_LE) {
+        if (Header.Magic is not Byml.BYML_MAGIC) {
             throw new InvalidDataException(
                 $"Invalid BYML magic: '{Encoding.UTF8.GetString(BitConverter.GetBytes(Header.Magic))}'");
         }
@@ -91,6 +92,14 @@ public readonly ref struct ImmutableByml
         _data = data;
         _offset = value;
         Type = type;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ToYaml()
+    {
+        YamlEmitter emitter = new();
+        emitter.Emit(this);
+        return emitter.Builder.ToString();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
