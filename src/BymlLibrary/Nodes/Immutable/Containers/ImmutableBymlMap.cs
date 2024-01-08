@@ -88,7 +88,18 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Reverse(ref RevrsReader reader, int offset, int count)
+    public SortedDictionary<string, Byml> ToMutable(in ImmutableByml root)
+    {
+        SortedDictionary<string, Byml> map = [];
+        foreach ((var key, var value) in this) {
+            map[root.KeyTable[key].ToManaged()]
+                = Byml.FromImmutable(value, root);
+        }
+
+        return map;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
     {
         for (int i = 0; i < count; i++) {
