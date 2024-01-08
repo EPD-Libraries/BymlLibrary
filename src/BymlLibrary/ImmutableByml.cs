@@ -249,37 +249,40 @@ public readonly ref struct ImmutableByml
         BymlContainer header = reader
             .Read<BymlContainer, BymlContainer.Reverser>(offset);
 
-        if (header.Type == BymlNodeType.HashMap32) {
-            ImmutableBymlHashMap32.Reverse(ref reader, offset, header.Count, reversedOffsets);
+        switch (header.Type) {
+            case BymlNodeType.HashMap32:
+                ImmutableBymlHashMap32.Reverse(ref reader, offset, header.Count, reversedOffsets);
+                break;
+            case BymlNodeType.HashMap64:
+                ImmutableBymlHashMap64.Reverse(ref reader, offset, header.Count, reversedOffsets);
+                break;
+            case BymlNodeType.Array:
+                ImmutableBymlArray.Reverse(ref reader, offset, header.Count, reversedOffsets);
+                break;
+            case BymlNodeType.Map:
+                ImmutableBymlMap.Reverse(ref reader, offset, header.Count, reversedOffsets);
+                break;
+            default:
+                throw new NotImplementedException($"""
+                    The container type '{header.Type}' has no implemented reverser
+                    """);
         }
-        else if (header.Type == BymlNodeType.HashMap64) {
-            ImmutableBymlHashMap64.Reverse(ref reader, offset, header.Count, reversedOffsets);
-        }
-        else if (header.Type == BymlNodeType.Array) {
-            ImmutableBymlArray.Reverse(ref reader, offset, header.Count, reversedOffsets);
-        }
-        else if (header.Type == BymlNodeType.Map) {
-            ImmutableBymlMap.Reverse(ref reader, offset, header.Count, reversedOffsets);
-        }
-
-        throw new NotImplementedException($"""
-            The container type '{header.Type}' has no implemented reverser
-            """
-        );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void ReverseSpecialValue(ref RevrsReader reader, int offset, BymlNodeType type)
     {
-        if (type is BymlNodeType.String or BymlNodeType.Binary) {
-            reader.Reverse<int>(offset);
-        }
-        else if (type is BymlNodeType.BinaryAligned) {
-            reader.Reverse<int>(offset);
-            reader.Reverse<int>();
-        }
-        else if (type is BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double) {
-            reader.Reverse<ulong>(offset);
+        switch (type) {
+            case BymlNodeType.String or BymlNodeType.Binary:
+                reader.Reverse<int>(offset);
+                break;
+            case BymlNodeType.BinaryAligned:
+                reader.Reverse<int>(offset);
+                reader.Reverse<int>();
+                break;
+            case BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double:
+                reader.Reverse<ulong>(offset);
+                break;
         }
     }
 
