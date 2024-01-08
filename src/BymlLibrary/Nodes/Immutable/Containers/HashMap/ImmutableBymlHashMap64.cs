@@ -112,7 +112,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Reverse(ref RevrsReader reader, int offset, int count)
+    public static void Reverse(ref RevrsReader reader, int offset, int count, in HashSet<int> reversedOffsets)
     {
         for (int i = 0; i < count; i++)
         {
@@ -121,7 +121,8 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             );
 
             ImmutableByml.ReverseNode(ref reader, entry.Value,
-                reader.Read<BymlNodeType>(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count + i)
+                reader.Read<BymlNodeType>(offset + BymlContainerNodeHeader.SIZE + Entry.SIZE * count + i),
+                reversedOffsets
             );
         }
     }

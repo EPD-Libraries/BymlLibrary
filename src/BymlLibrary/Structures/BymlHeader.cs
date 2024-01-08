@@ -25,6 +25,7 @@ public struct BymlHeader
     {
         public static void Reverse(in Span<byte> slice)
         {
+            slice[0x00..0x02].Reverse();
             slice[0x02..0x04].Reverse();
             slice[0x04..0x08].Reverse();
             slice[0x08..0x0C].Reverse();

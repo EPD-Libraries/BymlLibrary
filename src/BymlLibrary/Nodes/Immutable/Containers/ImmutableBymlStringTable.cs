@@ -66,7 +66,7 @@ public unsafe readonly ref struct ImmutableBymlStringTable(Span<byte> data, int 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Reverse(ref RevrsReader reader, int offset, int count)
     {
-        Span<int> offsets = reader.ReadSpan<int>(count);
+        Span<int> offsets = reader.ReadSpan<int>(++count);
         reader.Seek(offset + offsets[^1]);
     }
 }
