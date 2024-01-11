@@ -4,22 +4,24 @@ using System.Runtime.InteropServices;
 namespace BymlLibrary.Structures;
 
 [StructLayout(LayoutKind.Explicit, Pack = 2, Size = 0x10)]
-public struct BymlHeader
+public struct BymlHeader(ushort magic, ushort version, int keyTableOffset, int stringTableOffset, int rootNodeOffset)
 {
+    internal const int SIZE = 0x10;
+
     [FieldOffset(0x0)]
-    public ushort Magic;
+    public ushort Magic = magic;
 
     [FieldOffset(0x2)]
-    public ushort Version;
+    public ushort Version = version;
 
     [FieldOffset(0x4)]
-    public int KeyTableOffset;
+    public int KeyTableOffset = keyTableOffset;
 
     [FieldOffset(0x8)]
-    public int StringTableOffset;
+    public int StringTableOffset = stringTableOffset;
 
     [FieldOffset(0xC)]
-    public int RootNodeOffset;
+    public int RootNodeOffset = rootNodeOffset;
 
     public class Reverser : IStructReverser
     {

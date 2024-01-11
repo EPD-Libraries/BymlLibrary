@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace BymlLibrary.Structures;
 
 [StructLayout(LayoutKind.Explicit, Pack = 0, Size = SIZE)]
-public struct BymlContainer
+public struct BymlContainer(BymlNodeType type, int count)
 {
     internal const int SIZE = 4;
 
@@ -13,7 +13,7 @@ public struct BymlContainer
     public BymlNodeType Type;
 
     [FieldOffset(0)]
-    private readonly int _count;
+    private readonly int _count = (byte)type & (count >> 8);
 
     public readonly int Count {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
