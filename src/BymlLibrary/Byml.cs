@@ -1,4 +1,7 @@
 ﻿using BymlLibrary.Extensions;
+using BymlLibrary.Nodes.Containers;
+using BymlLibrary.Nodes.Containers.HashMap;
+using BymlLibrary.Writers;
 using Revrs;
 using System.Runtime.CompilerServices;
 
@@ -40,7 +43,7 @@ public sealed class Byml
     /// </summary>
     internal const ushort BYML_MAGIC = 0x4259;
 
-    private readonly object? _value;
+    internal readonly object? _value;
 
     public BymlNodeType Type { get; set; }
     public Endianness Endianness { get; set; }
@@ -96,31 +99,31 @@ public sealed class Byml
         return result;
     }
 
-    public void WriteBinary(in Stream stream, Endianness endianness)
+    public void WriteBinary(in Stream stream, Endianness endianness, ushort version = 7)
     {
-        RevrsWriter writer = new(stream, endianness);
-        
+        BymlWriter writer = new(this, stream, endianness, version);
+        writer.Write();
     }
 
-    public Byml(SortedDictionary<uint, Byml>? hashMap32)
+    public Byml(BymlHashMap32 hashMap32)
     {
         Type = BymlNodeType.HashMap32;
         _value = hashMap32;
     }
 
-    public Byml(SortedDictionary<ulong, Byml>? hashMap64)
+    public Byml(BymlHashMap64 hashMap64)
     {
         Type = BymlNodeType.HashMap64;
         _value = hashMap64;
     }
 
-    public Byml(List<Byml>? array)
+    public Byml(BymlArray array)
     {
         Type = BymlNodeType.Array;
         _value = array;
     }
 
-    public Byml(SortedDictionary<string, Byml>? map)
+    public Byml(BymlMap map)
     {
         Type = BymlNodeType.Map;
         _value = map;
@@ -192,20 +195,20 @@ public sealed class Byml
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SortedDictionary<uint, Byml> GetHashMap32()
-        => Get<SortedDictionary<uint, Byml>>();
+    public BymlHashMap32 GetHashMap32()
+        => Get<BymlHashMap32>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SortedDictionary<ulong, Byml> GetHashMap64()
-        => Get<SortedDictionary<ulong, Byml>>();
+    public BymlHashMap64 GetHashMap64()
+        => Get<BymlHashMap64>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public List<Byml> GetArray()
-        => Get<List<Byml>>();
+    public BymlArray GetArray()
+        => Get<BymlArray>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SortedDictionary<string, Byml> GetMap()
-        => Get<SortedDictionary<string, Byml>>();
+    public BymlMap GetMap()
+        => Get<BymlMap>();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string GetString()

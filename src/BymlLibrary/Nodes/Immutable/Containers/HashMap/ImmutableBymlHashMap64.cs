@@ -1,4 +1,5 @@
 ﻿using BymlLibrary.Extensions;
+using BymlLibrary.Nodes.Containers.HashMap;
 using BymlLibrary.Structures;
 using BymlLibrary.Yaml;
 using Revrs;
@@ -97,9 +98,9 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SortedDictionary<ulong, Byml> ToMutable(in ImmutableByml root)
+    public BymlHashMap64 ToMutable(in ImmutableByml root)
     {
-        SortedDictionary<ulong, Byml> hashMap64 = [];
+        BymlHashMap64 hashMap64 = [];
         foreach ((var key, var value) in this) {
             hashMap64[key] = Byml.FromImmutable(value, root);
         }

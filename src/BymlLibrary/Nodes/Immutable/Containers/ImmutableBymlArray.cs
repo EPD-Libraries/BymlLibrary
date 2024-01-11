@@ -1,4 +1,5 @@
 ﻿using BymlLibrary.Extensions;
+using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Structures;
 using BymlLibrary.Yaml;
 using Revrs;
@@ -72,9 +73,9 @@ public readonly ref struct ImmutableBymlArray(Span<byte> data, int offset, int c
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public List<Byml> ToMutable(in ImmutableByml root)
+    public BymlArray ToMutable(in ImmutableByml root)
     {
-        List<Byml> array = [];
+        BymlArray array = [];
         foreach (var value in this) {
             array.Add(Byml.FromImmutable(value, root));
         }

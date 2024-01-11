@@ -1,4 +1,5 @@
 ﻿using BymlLibrary.Extensions;
+using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Structures;
 using BymlLibrary.Yaml;
 using Revrs;
@@ -86,9 +87,9 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public SortedDictionary<string, Byml> ToMutable(in ImmutableByml root)
+    public BymlMap ToMutable(in ImmutableByml root)
     {
-        SortedDictionary<string, Byml> map = [];
+        BymlMap map = [];
         foreach ((var key, var value) in this) {
             map[root.KeyTable[key].ToManaged()]
                 = Byml.FromImmutable(value, root);
