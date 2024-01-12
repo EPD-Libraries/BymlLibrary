@@ -9,17 +9,18 @@ using BymlLibrary;
 using BymlLibrary.Yaml;
 using Revrs;
 
+// RevrsReader reader = new(buffer);
+// ImmutableByml immutableByml = new(ref reader);
+// 
+// YamlEmitter emitter = new();
+// emitter.Emit(immutableByml);
+// 
+// File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", emitter.Builder.ToString());
+
 byte[] buffer = File.ReadAllBytes(args[0]);
-RevrsReader reader = new(buffer);
-ImmutableByml immutableByml = new(ref reader);
-
-YamlEmitter emitter = new();
-emitter.Emit(immutableByml);
-
-File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", emitter.Builder.ToString());
+Byml byml = Byml.FromBinary(buffer);
 
 using FileStream fs = File.Create(args[1]);
-Byml byml = Byml.FromBinary(buffer);
 byml.WriteBinary(fs, byml.Endianness);
 
 // Console.WriteLine(byml.GetMap()["PtclBin"].GetBinaryAligned().Alignment);
