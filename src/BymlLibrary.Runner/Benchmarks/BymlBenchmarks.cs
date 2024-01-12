@@ -39,6 +39,12 @@ public class BymlBenchmarks
     }
 
     [Benchmark]
+    public void ToBinary()
+    {
+        _ = _byml.ToBinary(_byml.Endianness);
+    }
+
+    [Benchmark]
     public void ToYaml()
     {
         RevrsReader reader = new(_buffer);
