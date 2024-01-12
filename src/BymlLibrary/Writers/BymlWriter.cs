@@ -114,29 +114,36 @@ internal class BymlWriter
     private void WriteValue(in Byml byml)
     {
         switch (byml.Type) {
-            case BymlNodeType.String:
+            case BymlNodeType.String: {
                 Writer.Write(_strings[byml.GetString()]);
                 break;
-            case BymlNodeType.Bool:
+            }
+            case BymlNodeType.Bool: {
                 Writer.Write(byml.GetBool());
                 Writer.Move(3);
                 break;
-            case BymlNodeType.Int:
+            }
+            case BymlNodeType.Int: {
                 Writer.Write(byml.GetInt());
                 break;
-            case BymlNodeType.UInt32:
+            }
+            case BymlNodeType.UInt32: {
                 Writer.Write(byml.GetUInt32());
                 break;
-            case BymlNodeType.Float:
+            }
+            case BymlNodeType.Float: {
                 Writer.Write(byml.GetFloat());
                 break;
-            case BymlNodeType.Null:
+            }
+            case BymlNodeType.Null: {
                 Writer.Write(0);
                 break;
-            default:
+            }
+            default: {
                 throw new NotSupportedException($"""
                     The value type node '{byml.Type}' is not supported.
                     """);
+            }
         }
     }
 
@@ -144,20 +151,23 @@ internal class BymlWriter
     private void WriteSpecial(in Byml byml)
     {
         switch (byml.Type) {
-            case BymlNodeType.Binary:
+            case BymlNodeType.Binary: {
                 byte[] data = byml.GetBinary();
                 Writer.Write(data.Length);
                 Writer.Write(data);
                 break;
-            case BymlNodeType.BinaryAligned:
+            }
+            case BymlNodeType.BinaryAligned: {
                 (byte[] alignedData, int alignment) = byml.GetBinaryAligned();
                 Writer.Write(alignedData.Length);
                 Writer.Write(alignment);
                 Writer.Write(alignedData);
                 break;
-            case BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double:
+            }
+            case BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double: {
                 Writer.Write((ulong)(byml._value ?? 0));
                 break;
+            }
         }
     }
 
