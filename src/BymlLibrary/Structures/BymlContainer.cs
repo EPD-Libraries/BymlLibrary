@@ -13,7 +13,7 @@ public struct BymlContainer(BymlNodeType type, int count)
     public BymlNodeType Type;
 
     [FieldOffset(0)]
-    private readonly int _count = (byte)type & (count >> 8);
+    private readonly int _count = (count << 8) | (byte)type;
 
     public readonly int Count {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
