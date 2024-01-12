@@ -5,6 +5,7 @@ using BymlLibrary.Runner.Benchmarks;
 BenchmarkRunner.Run<BymlBenchmarks>();
 return;
 #else
+
 using BymlLibrary;
 using BymlLibrary.Yaml;
 using Revrs;
@@ -16,10 +17,14 @@ ImmutableByml immutableByml = new(ref reader);
 YamlEmitter emitter = new();
 emitter.Emit(immutableByml);
 
-File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", emitter.Builder.ToString());
+string yaml = emitter.Builder.ToString();
+File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", yaml);
 
-Byml byml = Byml.FromBinary(buffer);
-byml.WriteBinary(args[1], Endianness.Big);
+Byml byml = Byml.FromText(yaml);
+Console.WriteLine(byml.GetMap()["Actors"].GetArray()[0].GetMap()["name"].GetString());
+
+// Byml byml = Byml.FromBinary(buffer);
+// byml.WriteBinary(args[1], Endianness.Big);
 
 // Console.WriteLine(byml.GetMap()["PtclBin"].GetBinaryAligned().Alignment);
 // Console.WriteLine(
