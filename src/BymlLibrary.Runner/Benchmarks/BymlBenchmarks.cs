@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BymlLibrary.Legacy;
-using BymlLibrary.Yaml;
 using Revrs;
 
 namespace BymlLibrary.Runner.Benchmarks;
