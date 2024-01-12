@@ -123,6 +123,7 @@ public sealed class Byml
     public void WriteBinary(string filename, Endianness endianness, ushort version = 7)
         => File.WriteAllBytes(filename, ToBinary(endianness, version));
 
+    public static implicit operator Byml(BymlHashMap32 hashMap32) => new(hashMap32);
     public Byml(BymlHashMap32 hashMap32)
     {
         Type = BymlNodeType.HashMap32;
@@ -135,72 +136,84 @@ public sealed class Byml
         _value = hashMap64;
     }
 
+    public static implicit operator Byml(BymlArray array) => new(array);
     public Byml(BymlArray array)
     {
         Type = BymlNodeType.Array;
         _value = array;
     }
 
+    public static implicit operator Byml(BymlMap map) => new(map);
     public Byml(BymlMap map)
     {
         Type = BymlNodeType.Map;
         _value = map;
     }
 
+    public static implicit operator Byml(string value) => new(value);
     public Byml(string value)
     {
         Type = BymlNodeType.String;
         _value = value;
     }
 
+    public static implicit operator Byml(byte[] data) => new(data);
     public Byml(byte[] data)
     {
         Type = BymlNodeType.Binary;
         _value = data;
     }
 
+    public static implicit operator Byml((byte[] data, int alignment) value) => new(value.data, value.alignment);
     public Byml(byte[] data, int alignment)
     {
         Type = BymlNodeType.BinaryAligned;
         _value = (data, alignment);
     }
 
+    public static implicit operator Byml(bool value) => new(value);
     public Byml(bool value)
     {
         Type = BymlNodeType.Bool;
         _value = value;
     }
 
+    public static implicit operator Byml(int value) => new(value);
     public Byml(int value)
     {
         Type = BymlNodeType.Int;
         _value = value;
     }
 
+    public static implicit operator Byml(float value) => new(value);
     public Byml(float value)
     {
         Type = BymlNodeType.Float;
         _value = value;
     }
 
+    public static implicit operator Byml(uint value) => new(value);
     public Byml(uint value)
     {
         Type = BymlNodeType.UInt32;
         _value = value;
     }
 
+    public static implicit operator Byml(long value) => new(value);
     public Byml(long value)
     {
         Type = BymlNodeType.Int64;
         _value = value;
     }
 
+    public static implicit operator Byml(ulong value) => new(value);
     public Byml(ulong value)
     {
         Type = BymlNodeType.UInt64;
         _value = value;
     }
 
+    public static implicit operator Byml(double value) => new(value);
     public Byml(double value)
     {
         Type = BymlNodeType.Double;
