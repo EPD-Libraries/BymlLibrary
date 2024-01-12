@@ -99,11 +99,29 @@ public sealed class Byml
         return result;
     }
 
+    public byte[] ToBinary(Endianness endianness, ushort version = 7)
+    {
+        MemoryStream ms = new();
+        WriteBinary(ms, endianness, version);
+        return ms.ToArray();
+    }
+
+    /// <summary>
+    /// <b>Warning:</b> use <c>ToBinary</c> or <c>WriteBinary(string, ...)</c> when writing to a file,<br/>
+    /// the writting process is much faster when written into memory and then copied to disk.
+    /// </summary>
+    /// <param name="stream">The stream to write into (must be seekable)</param>
+    /// <param name="endianness">The endianness to use when writing the file</param>
+    /// <param name="version">The BYML version to use when writing the file</param>
     public void WriteBinary(in Stream stream, Endianness endianness, ushort version = 7)
     {
-        BymlWriterContext writer = new(this, stream, endianness, version);
+        BymlWriter writer = new(this, stream, endianness, version);
         writer.Write();
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteBinary(string filename, Endianness endianness, ushort version = 7)
+        => File.WriteAllBytes(filename, ToBinary(endianness, version));
 
     public Byml(BymlHashMap32 hashMap32)
     {

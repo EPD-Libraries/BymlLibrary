@@ -6,8 +6,8 @@ namespace BymlLibrary.Nodes.Containers;
 internal interface IBymlNode
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal int Collect(in BymlWriterContext writer);
+    internal int Collect(in BymlWriter writer);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal int Write(BymlWriterContext context);
+    internal void Write(BymlWriter context, Action<Byml> write);
 }

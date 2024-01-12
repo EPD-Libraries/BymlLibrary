@@ -6,7 +6,7 @@ namespace BymlLibrary.Nodes.Containers.HashMap;
 public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    int IBymlNode.Collect(in BymlWriterContext writer)
+    int IBymlNode.Collect(in BymlWriter writer)
     {
         HashCode hashCode = new();
         foreach ((var key, var node) in this) {
@@ -18,14 +18,12 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    int IBymlNode.Write(BymlWriterContext context)
+    void IBymlNode.Write(BymlWriter context, Action<Byml> write)
     {
-        int staged = 0;
         context.WriteContainerHeader(BymlNodeType.Map, Count);
         foreach ((var key, var node) in this) {
             context.Writer.Write(key);
-            context.WriteContainerNode(node);
-            staged++;
+            write(node);
         }
 
         foreach (var node in Values) {
@@ -33,6 +31,5 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
         }
 
         context.Writer.Align(4);
-        return staged;
     }
 }

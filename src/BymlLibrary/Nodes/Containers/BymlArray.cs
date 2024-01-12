@@ -6,7 +6,7 @@ namespace BymlLibrary.Nodes.Containers;
 public class BymlArray : List<Byml>, IBymlNode
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    int IBymlNode.Collect(in BymlWriterContext writer)
+    int IBymlNode.Collect(in BymlWriter writer)
     {
         HashCode hashCode = new();
         foreach (var node in this) {
@@ -17,7 +17,7 @@ public class BymlArray : List<Byml>, IBymlNode
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    int IBymlNode.Write(BymlWriterContext context)
+    void IBymlNode.Write(BymlWriter context, Action<Byml> write)
     {
         context.WriteContainerHeader(BymlNodeType.Array, Count);
         foreach (var node in this) {
@@ -26,12 +26,8 @@ public class BymlArray : List<Byml>, IBymlNode
 
         context.Writer.Align(4);
 
-        int staged = 0;
         foreach (var node in this) {
-            context.WriteContainerNode(node);
-            staged++;
+            write(node);
         }
-
-        return staged;
     }
 }

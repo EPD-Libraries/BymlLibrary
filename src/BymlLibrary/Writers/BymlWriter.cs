@@ -6,24 +6,21 @@ using System.Runtime.CompilerServices;
 
 namespace BymlLibrary.Writers;
 
-internal class BymlWriterContext
+internal class BymlWriter
 {
-    private const ushort BYML_MAGIC_BE = 0x5942;
-
     private readonly Byml _root;
     private readonly ushort _version;
 
     private readonly Dictionary<Byml, int> _referenceNodes = [];
-    private readonly Dictionary<int, int> _nodeOffsets = [];
-    private readonly Stack<(long, Byml)> _staged = [];
-    private int _trackAllStaged = 0;
+    private readonly Dictionary<int, int> __referenceNodeOffsets = [];
+
+    private Dictionary<string, int> _keys = [];
+    private Dictionary<string, int> _strings = [];
 
     public RevrsWriter Writer { get; }
-    public List<string> Keys { get; private set; } = [];
-    public List<string> Strings { get; private set; } = [];
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BymlWriterContext(Byml byml, in Stream stream, Endianness endianness, ushort version = 7)
+    public BymlWriter(Byml byml, in Stream stream, Endianness endianness, ushort version = 7)
     {
         Writer = new(stream, endianness);
         _version = version;
@@ -35,10 +32,8 @@ internal class BymlWriterContext
     {
         Writer.Seek(BymlHeader.SIZE);
 
-        int keyTableOffset = BymlStringTable.Write(this,
-            Keys = [..Keys.Distinct().Order(StringComparer.Ordinal)]);
-        int stringTableOffset = BymlStringTable.Write(this,
-            Strings = [..Strings.Distinct().Order(StringComparer.Ordinal)]);
+        int keyTableOffset = WriteStringTable(ref _keys);
+        int stringTableOffset = WriteStringTable(ref _strings);
         int rootNodeOffset = (int)Writer.Position;
 
         if (_root._value is not (null or IBymlNode)) {
@@ -51,9 +46,8 @@ internal class BymlWriterContext
 
         Writer.Seek(0);
         Writer.Write<BymlHeader, BymlHeader.Reverser>(new(
-            magic: Writer.Endianness == Endianness.Little
-                ? Byml.BYML_MAGIC : BYML_MAGIC_BE,
-            _version,
+            magic: Byml.BYML_MAGIC,
+            version: _version,
             keyTableOffset,
             stringTableOffset,
             rootNodeOffset
@@ -77,10 +71,23 @@ internal class BymlWriterContext
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void WriteContainer(IBymlNode container)
     {
-        int staged = container.Write(this);
+        List<(long, Byml)> staged = [];
 
-        for (int i = 0; i < staged; i++) {
-            (long offset, Byml node) = _staged.Pop();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void WriteNode(Byml byml)
+        {
+            if (byml.Type.IsValueType()) {
+                WriteValue(byml);
+            }
+            else {
+                staged.Add((Writer.Position, byml));
+                Writer.Write(0u);
+            }
+        }
+
+        container.Write(this, WriteNode);
+
+        foreach ((long offset, Byml node) in staged) {
             if (!_referenceNodes.TryGetValue(node, out int hash)) {
                 throw new InvalidOperationException($"""
                     Collection failed to collect '{node}'
@@ -88,13 +95,13 @@ internal class BymlWriterContext
             }
 
             int currentPosition = (int)Writer.Position;
-            if (_nodeOffsets.TryGetValue(hash, out int cachedOffset)) {
+            if (__referenceNodeOffsets.TryGetValue(hash, out int cachedOffset)) {
                 Writer.Seek(offset);
                 Writer.Write(cachedOffset);
                 Writer.Seek(currentPosition);
             }
             else {
-                _nodeOffsets.Add(hash, currentPosition);
+                __referenceNodeOffsets.Add(hash, currentPosition);
                 Writer.Seek(offset);
                 Writer.Write(currentPosition);
                 Writer.Seek(currentPosition);
@@ -108,9 +115,7 @@ internal class BymlWriterContext
     {
         switch (byml.Type) {
             case BymlNodeType.String:
-                Writer.Write(
-                    Strings.IndexOf(byml.GetString())
-                );
+                Writer.Write(_strings[byml.GetString()]);
                 break;
             case BymlNodeType.Bool:
                 Writer.Write(byml.GetBool());
@@ -164,17 +169,30 @@ internal class BymlWriterContext
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteContainerNode(in Byml byml)
+    public int WriteStringTable(ref Dictionary<string, int> strings)
     {
-        _trackAllStaged++;
+        strings = strings
+            .OrderBy(x => x.Key, StringComparer.Ordinal)
+            .Select((x, i) => (x.Key, Index: i))
+            .ToDictionary(x => x.Key, x => x.Index);
 
-        if (byml.Type.IsValueType()) {
-            WriteValue(byml);
+        int tableOffset = (int)Writer.Position;
+
+        WriteContainerHeader(BymlNodeType.StringTable, strings.Count);
+
+        int previousStringOffset = (strings.Count + 1) * sizeof(uint) + BymlContainer.SIZE;
+        Writer.Write(previousStringOffset);
+        foreach (var str in strings.Keys) {
+            Writer.Write(previousStringOffset += str.Length + 1);
         }
-        else {
-            _staged.Push((Writer.Position, byml));
-            Writer.Move(4);
+
+        foreach (var str in strings.Keys) {
+            Writer.WriteStringUtf8(str);
+            Writer.Write<byte>(0);
         }
+
+        Writer.Align(4);
+        return tableOffset;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -186,7 +204,7 @@ internal class BymlWriterContext
             return hash;
         }
         else if (byml._value is string str) {
-            AddString(str);
+            _strings[str] = 0;
             return str.GetHashCode();
         }
         else {
@@ -195,8 +213,8 @@ internal class BymlWriterContext
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddKey(string value) => Keys.Add(value);
+    public void AddKey(string value) => _keys[value] = 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddString(string value) => Strings.Add(value);
+    public int GetKeyIndex(string key) => _keys[key];
 }
