@@ -1,5 +1,4 @@
 ﻿using BymlLibrary.Writers;
-using Revrs;
 using System.Runtime.CompilerServices;
 
 namespace BymlLibrary.Nodes.Containers;
@@ -7,8 +6,8 @@ namespace BymlLibrary.Nodes.Containers;
 internal interface IBymlNode
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal int Collect(in BymlWriter writer);
+    internal int Collect(in BymlWriterContext writer);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void Write(RevrsWriter writer);
+    internal int Write(BymlWriterContext context);
 }

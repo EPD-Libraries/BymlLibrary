@@ -1,11 +1,12 @@
 ﻿using BymlLibrary.Writers;
-using Revrs;
+using System.Runtime.CompilerServices;
 
 namespace BymlLibrary.Nodes.Containers;
 
 public class BymlMap : Dictionary<string, Byml>, IBymlNode
 {
-    int IBymlNode.Collect(in BymlWriter writer)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    int IBymlNode.Collect(in BymlWriterContext writer)
     {
         HashCode hashCode = new();
         foreach ((var key, var node) in this) {
@@ -17,8 +18,18 @@ public class BymlMap : Dictionary<string, Byml>, IBymlNode
         return hashCode.ToHashCode();
     }
 
-    void IBymlNode.Write(RevrsWriter writer)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    int IBymlNode.Write(BymlWriterContext context)
     {
-        throw new NotImplementedException();
+        int staged = 0;
+        context.WriteContainerHeader(BymlNodeType.Map, Count);
+        foreach ((var key, var node) in this) {
+            int keyIndexAndType = context.Keys.IndexOf(key) | ((byte)node.Type << 24);
+            context.Writer.Write(keyIndexAndType);
+            context.WriteContainerNode(node);
+            staged++;
+        }
+
+        return staged;
     }
 }
