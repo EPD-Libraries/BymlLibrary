@@ -1,4 +1,5 @@
 ﻿using SharpYaml.Serialization;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
@@ -121,13 +122,17 @@ public class YamlConverter
             return new BymlNode(false);
         }
         else if (tag == "!u") {
-            return new BymlNode(uint.Parse(value, CultureInfo.InvariantCulture));
+            return new BymlNode(
+                Convert.ToUInt32(value[2..], 16)
+            );
         }
         else if (tag == "!d") {
             return new BymlNode(double.Parse(value, CultureInfo.InvariantCulture));
         }
         else if (tag == "!ul") {
-            return new BymlNode(ulong.Parse(value, CultureInfo.InvariantCulture));
+            return new BymlNode(
+                Convert.ToUInt64(value[2..], 16)
+            );
         }
         else if (tag == "!l") {
             return new BymlNode(long.Parse(value, CultureInfo.InvariantCulture));
