@@ -1,8 +1,11 @@
-﻿using Syroot.BinaryData;
+﻿#pragma warning disable CS8618
+
+using Syroot.BinaryData;
 using System.Text;
 
 namespace BymlLibrary.Legacy.IO;
 
+[Obsolete("BymlFile is obsolete, use BymlLibrary.Byml")]
 internal class BymlWriter
 {
     public static byte[] Write(BymlFile byml, Encoding encoding)
@@ -46,12 +49,13 @@ internal class BymlWriter
     }
 }
 
+[Obsolete("BymlFile is obsolete, use BymlLibrary.Byml")]
 internal class WriteContext
 {
     private int num_non_inline_nodes = 0;
-    private StringTable hash_key_table;
-    private StringTable string_table;
-    private Dictionary<BymlNode, uint> non_inline_node_data = new();
+    private readonly StringTable hash_key_table;
+    private readonly StringTable string_table;
+    private readonly Dictionary<BymlNode, uint> non_inline_node_data = [];
     public BinaryStream Writer { get; set; }
     public StringTable HashKeys { get => hash_key_table; }
     public StringTable Strings { get => string_table; }
@@ -147,21 +151,15 @@ internal class WriteContext
         }
     }
 
-    private class NonInlineNode
+    private class NonInlineNode(uint containerOffset, BymlNode node)
     {
-        public uint ContainerOffset { get; set; }
-        public BymlNode Node { get; set; }
-
-        public NonInlineNode(uint containerOffset, BymlNode node)
-        {
-            ContainerOffset = containerOffset;
-            Node = node;
-        }
+        public uint ContainerOffset { get; set; } = containerOffset;
+        public BymlNode Node { get; set; } = node;
     }
 
     public void WriteContainerNode(BymlNode node)
     {
-        List<NonInlineNode> non_inline_nodes = new();
+        List<NonInlineNode> non_inline_nodes = [];
 
         switch (node.Type) {
             case NodeType.Array:
@@ -249,7 +247,7 @@ internal class WriteContext
 internal class StringTable
 {
     private bool built;
-    private readonly Dictionary<string, uint> hash_table = new();
+    private readonly Dictionary<string, uint> hash_table = [];
     private readonly SortedSet<string> sorted_strings = new(new AsciiComparer());
     public uint Size { get => (uint)sorted_strings.Count; }
     public SortedSet<string> Strings { get => sorted_strings; }

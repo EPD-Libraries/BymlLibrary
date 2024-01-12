@@ -190,7 +190,7 @@ internal class BymlWriter
 
         WriteContainerHeader(BymlNodeType.StringTable, strings.Count);
 
-        int previousStringOffset = (strings.Count + 1) * sizeof(uint) + BymlContainer.SIZE;
+        int previousStringOffset = ((strings.Count + 1) * sizeof(uint)) + BymlContainer.SIZE;
         Writer.Write(previousStringOffset);
         foreach (var str in strings.Keys) {
             Writer.Write(previousStringOffset += str.Length + 1);

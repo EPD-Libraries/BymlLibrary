@@ -1,7 +1,11 @@
-﻿using BymlLibrary.Legacy.Parser;
+﻿#pragma warning disable CS8600, CS8602, CS8604, CS8618
+
+using BymlLibrary.Legacy.Parser;
 
 namespace BymlLibrary.Legacy;
 
+
+[Obsolete("BymlFile is obsolete, use BymlLibrary.Byml")]
 public class BymlNode : IEquatable<BymlNode>
 {
     private readonly NodeType type;
@@ -106,8 +110,8 @@ public class BymlNode : IEquatable<BymlNode>
         };
     }
 
-    public override bool Equals(object other) => Equals(other as BymlNode);
-    public virtual bool Equals(BymlNode other)
+    public override bool Equals(object? other) => Equals(other as BymlNode);
+    public virtual bool Equals(BymlNode? other)
     {
         if (this is null || other is null || type != other.type) {
             return false;

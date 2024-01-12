@@ -1,63 +1,61 @@
 ﻿using BymlLibrary.Legacy.Collections;
 using Syroot.BinaryData;
 using Syroot.BinaryData.Core;
-using System.Text;
 
 namespace BymlLibrary.Legacy.IO;
 
+[Obsolete("BymlFile is obsolete, use Byml")]
 internal class BymlReader : BymlFile
 {
-    private BymlNode NameArray { get; set; }
-    private BymlNode StringArray { get; set; }
+    private BymlNode _nameArray = new();
+    private BymlNode _stringArray = new();
 
-    public BymlFile Read(Stream stream, Encoding encoding)
+    public BymlFile Read(Stream stream)
     {
         // Open a reader on the given stream.
-        using (BinaryStream reader = new(stream, encoding: encoding, leaveOpen: true)) {
-            ushort magic = reader.ReadUInt16();
+        using BinaryStream reader = new(stream);
+        ushort magic = reader.ReadUInt16();
 
-            if (magic == 0x5942) {
-                Endianness = Endian.Big;
-            }
-            else if (magic == 0x4259) {
-                Endianness = Endian.Little;
-            }
-            else {
-                throw new BymlException($"Could not decompile BYML. Invalid header '{magic}'.");
-            }
-
-            reader.ByteConverter = ByteConverter.GetConverter(Endianness);
-
-            // Get BYML version
-            Version = reader.ReadUInt16();
-            if (Version < 2 || Version > 4) {
-                throw new BymlException($"Unexpected version {Version}");
-            }
-
-            // Read the name array, holding strings referenced by index for the names of other nodes.
-            uint offset = reader.ReadUInt32();
-            if (offset > 0) {
-                NameArray = ReadEnumerableNode(reader, offset);
-            }
-            offset = reader.ReadUInt32();
-            if (offset > 0) {
-                StringArray = ReadEnumerableNode(reader, offset);
-            }
-
-            if (reader.BaseStream.Length <= 16) {
-                RootNode = new BymlNode(new List<BymlNode>());
-            }
-
-            offset = reader.ReadUInt32();
-            if (offset == 0) {
-                RootNode = new BymlNode(new List<BymlNode>());
-            }
-            else {
-                RootNode = ReadEnumerableNode(reader, offset);
-            }
+        if (magic == 0x5942) {
+            Endianness = Endian.Big;
+        }
+        else if (magic == 0x4259) {
+            Endianness = Endian.Little;
+        }
+        else {
+            throw new BymlException($"Could not decompile BYML. Invalid header '{magic}'.");
         }
 
-        stream.Dispose();
+        reader.ByteConverter = ByteConverter.GetConverter(Endianness);
+
+        // Get BYML version
+        Version = reader.ReadUInt16();
+        if (Version < 2 || Version > 4) {
+            throw new BymlException($"Unexpected version {Version}");
+        }
+
+        // Read the name array, holding strings referenced by index for the names of other nodes.
+        uint offset = reader.ReadUInt32();
+        if (offset > 0) {
+            _nameArray = ReadEnumerableNode(reader, offset);
+        }
+        offset = reader.ReadUInt32();
+        if (offset > 0) {
+            _stringArray = ReadEnumerableNode(reader, offset);
+        }
+
+        if (reader.BaseStream.Length <= 16) {
+            RootNode = new BymlNode(new List<BymlNode>());
+        }
+
+        offset = reader.ReadUInt32();
+        if (offset == 0) {
+            RootNode = new BymlNode(new List<BymlNode>());
+        }
+        else {
+            RootNode = ReadEnumerableNode(reader, offset);
+        }
+
         return this;
     }
 
@@ -84,7 +82,7 @@ internal class BymlReader : BymlFile
 
     public BymlNode ReadArrayNode(BinaryStream reader, int length)
     {
-        BymlNode node = new BymlNode(new List<BymlNode>());
+        BymlNode node = new(new List<BymlNode>());
         IEnumerable<NodeType> types = reader.ReadBytes(length).Select(x => (NodeType)x);
         reader.Align(4);
 
@@ -111,7 +109,7 @@ internal class BymlReader : BymlFile
             int nodeNameIndex = (int)Get3MsbBytes(indexAndType);
             NodeType type = (NodeType)Get1MsbByte(indexAndType);
 
-            string name = NameArray.Array[nodeNameIndex].String;
+            string name = _nameArray.Array[nodeNameIndex].String;
             BymlNode value = ReadNode(reader, type);
 
             if (type.IsEnumerable()) {
@@ -153,7 +151,7 @@ internal class BymlReader : BymlFile
         // Read the following UInt32 which is representing the value directly.
         return nodeType switch {
             NodeType.Array or NodeType.Hash or NodeType.StringArray => new BymlNode(reader.ReadUInt32()),// offset
-            NodeType.String => new BymlNode(StringArray.Array[reader.ReadInt32()].String),
+            NodeType.String => new BymlNode(_stringArray.Array[reader.ReadInt32()].String),
             NodeType.Bool => new BymlNode(reader.ReadInt32() != 0),
             NodeType.Int => new BymlNode(reader.ReadInt32()),
             NodeType.Float => new BymlNode(reader.ReadSingle()),

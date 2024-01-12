@@ -26,9 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Revrs" Version="1.0.1" />
-    <PackageReference Include="SharpYaml" Version="2.1.0" />
     <PackageReference Include="Syroot.BinaryData" Version="5.2.2" />
     <PackageReference Include="Syroot.Maths" Version="1.5.3" />
     <PackageReference Include="YamlDotNet" Version="13.7.1" />

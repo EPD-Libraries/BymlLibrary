@@ -1,14 +1,17 @@
-﻿using SharpYaml.Serialization;
-using System.Buffers.Binary;
+﻿#pragma warning disable CS8602, CS8603, CS8604
+
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using YamlDotNet.Core.Events;
+using YamlDotNet.RepresentationModel;
 
 namespace BymlLibrary.Legacy.Parser;
 
+[Obsolete("BymlFile is obsolete, use BymlLibrary.Byml")]
 public class YamlConverter
 {
-    private static Dictionary<string, BymlNode> ReferenceNodes { get; set; } = new Dictionary<string, BymlNode>();
+    private static Dictionary<string, BymlNode> ReferenceNodes { get; set; } = [];
 
     public static string ToYaml(BymlFile byml)
     {
@@ -59,7 +62,7 @@ public class YamlConverter
         if (node is YamlMappingNode castMappingNode) {
             var values = new Dictionary<string, BymlNode>();
             if (IsValidReference(node)) {
-                ReferenceNodes.Add(node.Tag, new BymlNode(values));
+                ReferenceNodes.Add(node.Tag.Value, new BymlNode(values));
             }
 
             foreach (var child in castMappingNode.Children) {
@@ -77,7 +80,7 @@ public class YamlConverter
 
             var values = new List<BymlNode>();
             if (IsValidReference(node)) {
-                ReferenceNodes.Add(node.Tag, new BymlNode(values));
+                ReferenceNodes.Add(node.Tag.Value, new BymlNode(values));
             }
 
             foreach (var child in castSequenceNode.Children) {
@@ -91,8 +94,8 @@ public class YamlConverter
             string tag = castScalarNode.Value.Replace("!refTag=", string.Empty);
             Debug.WriteLine($"refNode {tag} {ReferenceNodes.ContainsKey(tag)}");
 
-            if (ReferenceNodes.ContainsKey(tag)) {
-                return ReferenceNodes[tag];
+            if (ReferenceNodes.TryGetValue(tag, out BymlNode? value)) {
+                return value;
             }
             else {
                 Console.WriteLine("Failed to find reference node! " + tag);
@@ -100,17 +103,18 @@ public class YamlConverter
             }
         }
         else {
-            return ConvertValue(((YamlScalarNode)node).Value, ((YamlScalarNode)node).Tag);
+            return ConvertValue(((YamlScalarNode)node).Value, ((YamlScalarNode)node).Tag.Value);
         }
     }
 
-    static bool IsValidReference(YamlNode node) => node.Tag != null && node.Tag.Contains("!ref") && !ReferenceNodes.ContainsKey(node.Tag);
+    static bool IsValidReference(YamlNode node)
+    {
+        return !node.Tag.IsEmpty && node.Tag.Value.Contains("!ref") && !ReferenceNodes.ContainsKey(node.Tag.Value);
+    }
 
     static BymlNode ConvertValue(string value, string tag)
     {
-        if (tag == null) {
-            tag = "";
-        }
+        tag ??= "";
 
         if (value == "null") {
             return new BymlNode();
@@ -154,14 +158,14 @@ public class YamlConverter
 
     static YamlNode SaveNode(BymlNode node)
     {
-        if (node == null) {
+        if (node is null) {
             return new YamlScalarNode("null");
         }
         else if (node.Type == NodeType.Array) {
             var yamlNode = new YamlSequenceNode();
 
             if (node.Array.Count < 6 && !HasEnumerables(node)) {
-                yamlNode.Style = SharpYaml.YamlStyle.Flow;
+                yamlNode.Style = SequenceStyle.Flow;
             }
 
             foreach (BymlNode item in node.Array) {
@@ -174,15 +178,15 @@ public class YamlConverter
             var yamlNode = new YamlMappingNode();
 
             if (node.Hash.Count < 6 && !HasEnumerables(node)) {
-                yamlNode.Style = SharpYaml.YamlStyle.Flow;
+                yamlNode.Style = MappingStyle.Flow;
             }
 
             foreach ((string key, BymlNode item) in node.Hash) {
-                YamlScalarNode keyNode = new YamlScalarNode(key);
+                YamlScalarNode keyNode = new(key);
                 if (IsHash(key)) {
                     uint hash = Convert.ToUInt32(key, 16);
-                    if (Hashes.ContainsKey(hash)) {
-                        keyNode.Value = Hashes[hash];
+                    if (Hashes.TryGetValue(hash, out string? value)) {
+                        keyNode.Value = value;
                     }
                 }
                 yamlNode.Add(keyNode, SaveNode(item));
@@ -231,14 +235,14 @@ public class YamlConverter
     private static Dictionary<uint, string> Hashes => CreateHashList();
     private static Dictionary<uint, string> CreateHashList()
     {
-        List<string> hashLists = new()
-        {
+        List<string> hashLists =
+        [
             "AcnhByml",
             "AcnhHeaders",
             "AcnhValues"
-        };
+        ];
 
-        Dictionary<uint, string> hashes = new();
+        Dictionary<uint, string> hashes = [];
 
         foreach (var list in hashLists) {
             string hashList = new Resource($"Legacy.Data.{list}").ToString();
@@ -253,9 +257,7 @@ public class YamlConverter
     private static void CheckHash(ref Dictionary<uint, string> hashes, string hashStr)
     {
         uint hash = Crc32.Compute(hashStr);
-        if (!hashes.ContainsKey(hash)) {
-            hashes.Add(hash, hashStr);
-        }
+        hashes.TryAdd(hash, hashStr);
     }
 
     public static bool IsHash(string k) => k != null && IsHex(k.ToArray());

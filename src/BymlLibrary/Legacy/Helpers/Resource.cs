@@ -5,13 +5,13 @@ namespace BymlLibrary.Legacy;
 
 internal class Resource
 {
-    internal byte[] Data { get; set; } = Array.Empty<byte>();
+    internal byte[] Data { get; set; } = [];
     internal Resource(string resourceName)
     {
         Assembly assembly = Assembly.GetCallingAssembly();
-        Stream resStream = assembly.GetManifestResourceStream("BymlLibrary." + resourceName);
+        Stream? resStream = assembly.GetManifestResourceStream("BymlLibrary." + resourceName);
 
-        if (resStream == null) {
+        if (resStream is null) {
             return;
         }
 

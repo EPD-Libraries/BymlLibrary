@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿#pragma warning disable CS0618
+
+using BenchmarkDotNet.Attributes;
 using BymlLibrary.Legacy;
 using Revrs;
 
@@ -28,27 +30,27 @@ public class BymlBenchmarks
     {
         Byml _ = Byml.FromBinary(_buffer);
     }
-    
+
     [Benchmark]
     public void ReadImmutable()
     {
         RevrsReader reader = new(_buffer);
         ImmutableByml _ = new(ref reader);
     }
-    
+
     [Benchmark]
     public void Write()
     {
         using MemoryStream ms = new();
         _byml.WriteBinary(ms, _byml.Endianness);
     }
-    
+
     [Benchmark]
     public void ToBinary()
     {
         _ = _byml.ToBinary(_byml.Endianness);
     }
-    
+
     [Benchmark]
     public void ToYaml()
     {
@@ -56,31 +58,31 @@ public class BymlBenchmarks
         ImmutableByml byml = new(ref reader);
         string _ = byml.ToYaml();
     }
-    
+
     [Benchmark]
     public void FromYaml()
     {
-        Byml _ = YamlParser.Parse(_yaml);
+        Byml _ = Byml.FromText(_yaml);
     }
-    
+
     [Benchmark]
     public void LegacyRead()
     {
         BymlFile _ = BymlFile.FromBinary(_buffer);
     }
-    
+
     [Benchmark]
     public void LegacyWrite()
     {
         byte[] _ = _legacyByml.ToBinary();
     }
-    
+
     [Benchmark]
     public void LegacyToYaml()
     {
         string _ = _legacyByml.ToYaml();
     }
-    
+
     [Benchmark]
     public void LegacyFromYaml()
     {

@@ -1,10 +1,13 @@
-﻿using BymlLibrary.Legacy.IO;
+﻿#pragma warning disable CS8600, CS8602, CS8603, CS8604
+
+using BymlLibrary.Legacy.IO;
 using Syroot.BinaryData.Core;
 using System.Text;
 using System.Xml;
 
 namespace BymlLibrary.Legacy.Parser;
 
+[Obsolete("BymlFile is obsolete, use BymlLibrary.Byml")]
 internal static class XmlConverter
 {
     public static string ToXml(BymlFile data)
@@ -41,11 +44,11 @@ internal static class XmlConverter
         XmlDocument xml = new();
         xml.LoadXml(xmlString);
         XmlNode n = xml.SelectSingleNode("/Root/isBigEndian");
-        byml.Endianness = n.Attributes["Value"].Value.ToLower() == "true" ? Endian.Big : Endian.Little;
+        byml.Endianness = n.Attributes["Value"].Value.Equals("true", StringComparison.CurrentCultureIgnoreCase) ? Endian.Big : Endian.Little;
         n = xml.SelectSingleNode("/Root/BymlFormatVersion");
         byml.Version = ushort.Parse(n.Attributes["Value"].Value);
         n = xml.SelectSingleNode("/Root/SupportPaths");
-        byml.SupportPaths = n.Attributes["Value"].Value.ToLower() == "true";
+        byml.SupportPaths = n.Attributes["Value"].Value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
 
         n = xml.SelectSingleNode("/Root/BymlRoot");
         if (n.ChildNodes.Count != 1) {
@@ -61,7 +64,7 @@ internal static class XmlConverter
     // Xml Writer
     #region Expand
 
-    static void WriteNode(dynamic node, string name, XmlTextWriter xmlWriter)
+    static void WriteNode(dynamic node, string? name, XmlTextWriter xmlWriter)
     {
         if (node == null) {
             if (name == null) {
@@ -143,7 +146,7 @@ internal static class XmlConverter
 
     internal static IDictionary<string, dynamic> ParseDictNode(XmlNode xmlNode)
     {
-        Dictionary<string, dynamic> res = new();
+        Dictionary<string, dynamic> res = [];
         for (int i = 0; i < xmlNode.ChildNodes.Count; i++) {
             var c = xmlNode.ChildNodes[i];
             res.Add(c.Attributes["N"].Value, ParseNode(c));
@@ -154,7 +157,7 @@ internal static class XmlConverter
 
     internal static IList<dynamic> ParseArrNode(XmlNode n)
     {
-        List<dynamic> res = new();
+        List<dynamic> res = [];
         for (int i = 0; i < n.ChildNodes.Count; i++) {
             res.Add(ParseNode(n.ChildNodes[i]));
         }
