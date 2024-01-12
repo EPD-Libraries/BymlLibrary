@@ -25,7 +25,7 @@ public readonly ref struct ImmutableByml
     /// <summary>
     /// The node offset, or the actual value in value nodes
     /// </summary>
-    private readonly int _offset;
+    private readonly BymlValue _value;
 
     public ImmutableByml(ref RevrsReader reader)
     {
@@ -83,14 +83,14 @@ public readonly ref struct ImmutableByml
         }
 
         ref BymlContainer rootNodeHeader
-            = ref _data[(_offset = Header.RootNodeOffset)..].Read<BymlContainer>();
+            = ref _data[(_value = new(Header.RootNodeOffset)).Offset..].Read<BymlContainer>();
         Type = rootNodeHeader.Type;
     }
 
     internal ImmutableByml(Span<byte> data, int value, BymlNodeType type)
     {
         _data = data;
-        _offset = value;
+        _value = new(value);
         Type = type;
     }
 
@@ -107,7 +107,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap32);
-        return new ImmutableBymlHashMap32(_data, _offset, header.Count, header.Type);
+        return new ImmutableBymlHashMap32(_data, _value.Offset, header.Count, header.Type);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -115,7 +115,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap64);
-        return new ImmutableBymlHashMap64(_data, _offset, header.Count, header.Type);
+        return new ImmutableBymlHashMap64(_data, _value.Offset, header.Count, header.Type);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,7 +123,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.Array);
-        return new ImmutableBymlArray(_data, _offset, header.Count);
+        return new ImmutableBymlArray(_data, _value.Offset, header.Count);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,7 +131,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.Map);
-        return new ImmutableBymlMap(_data, _offset, header.Count);
+        return new ImmutableBymlMap(_data, _value.Offset, header.Count);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -139,7 +139,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.StringTable);
-        return new(_data, _offset, header.Count);
+        return new(_data, _value.Offset, header.Count);
     }
 
     //
@@ -148,18 +148,18 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly Span<byte> GetBinary()
     {
-        int size = _data[_offset..].Read<int>();
-        int offset = _offset + sizeof(int);
+        int size = _data[_value.Offset..].Read<int>();
+        int offset = _value.Offset + sizeof(int);
         return _data[offset..(offset + size)];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly Span<byte> GetBinaryAligned(out int alignment)
     {
-        int size = _data[_offset..].Read<int>();
-        alignment = _data[(_offset + sizeof(int))..].Read<int>();
+        int size = _data[_value.Offset..].Read<int>();
+        alignment = _data[(_value.Offset + sizeof(int))..].Read<int>();
 
-        int offset = _offset + (sizeof(int) * 2);
+        int offset = _value.Offset + (sizeof(int) * 2);
         return _data[offset..(offset + size)];
     }
 
@@ -167,7 +167,7 @@ public readonly ref struct ImmutableByml
     public readonly int GetStringIndex()
     {
         Type.Assert(BymlNodeType.String);
-        return _offset;
+        return _value.Int;
     }
 
     //
@@ -177,49 +177,49 @@ public readonly ref struct ImmutableByml
     public readonly bool GetBool()
     {
         Type.Assert(BymlNodeType.Bool);
-        return _offset != 0;
+        return _value.Bool;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int GetInt()
     {
         Type.Assert(BymlNodeType.Int);
-        return _offset;
+        return _value.Int;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly float GetFloat()
     {
         Type.Assert(BymlNodeType.Float);
-        return _offset;
+        return _value.Float;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly uint GetUInt32()
     {
         Type.Assert(BymlNodeType.UInt32);
-        return (uint)_offset;
+        return (uint)_value.UInt32;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly ref long GetInt64()
     {
         Type.Assert(BymlNodeType.Int64);
-        return ref _data[_offset..].Read<long>();
+        return ref _data[_value.Offset..].Read<long>();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly ref ulong GetUInt64()
     {
         Type.Assert(BymlNodeType.UInt64);
-        return ref _data[_offset..].Read<ulong>();
+        return ref _data[_value.Offset..].Read<ulong>();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly ref double GetDouble()
     {
         Type.Assert(BymlNodeType.Double);
-        return ref _data[_offset..].Read<double>();
+        return ref _data[_value.Offset..].Read<double>();
     }
 
     public bool IsNull {
@@ -289,7 +289,7 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ref BymlContainer CheckContainerHeader(BymlNodeType expected)
     {
-        ref BymlContainer header = ref _data[_offset..]
+        ref BymlContainer header = ref _data[_value.Offset..]
             .Read<BymlContainer>();
         header.Type.Assert(expected);
         return ref header;
