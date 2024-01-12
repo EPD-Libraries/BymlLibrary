@@ -7,17 +7,13 @@ return;
 #else
 
 using BymlLibrary;
-using BymlLibrary.Yaml;
 using Revrs;
 
 byte[] buffer = File.ReadAllBytes(args[1]);
 RevrsReader reader = new(buffer);
 ImmutableByml immutableByml = new(ref reader);
 
-YamlEmitter emitter = new();
-emitter.Emit(immutableByml);
-
-string yaml = emitter.Builder.ToString();
+string yaml = immutableByml.ToYaml();
 File.WriteAllText("D:\\bin\\Byml-v7\\test.yml", yaml);
 
 Byml byml = Byml.FromText(yaml);

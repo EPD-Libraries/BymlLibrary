@@ -124,7 +124,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
+    internal unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
         emitter.Builder.Append($"!h64");
         emitter.NewLine();

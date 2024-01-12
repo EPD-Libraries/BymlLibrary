@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BymlLibrary.Yaml;
 
-public class YamlEmitter
+internal class YamlEmitter
 {
     private const string INDENT = "  ";
     private const char NEWLINE_CHAR = '\n';

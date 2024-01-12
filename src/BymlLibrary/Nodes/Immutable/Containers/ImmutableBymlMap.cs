@@ -112,7 +112,7 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
+    internal unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
         if (Count <= 5 && !HasContainerNodes()) {
             emitter.Builder.Append('{');
