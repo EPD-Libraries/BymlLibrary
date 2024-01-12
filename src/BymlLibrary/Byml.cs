@@ -2,6 +2,7 @@
 using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Nodes.Containers.HashMap;
 using BymlLibrary.Writers;
+using BymlLibrary.Yaml;
 using Revrs;
 using System.Runtime.CompilerServices;
 
@@ -54,6 +55,15 @@ public sealed class Byml
         ImmutableByml byml = new(ref reader);
         return FromImmutable(byml, byml);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Byml FromText(string text)
+    {
+        return YamlParser.Parse(text);
+    }
+
+    public static Byml FromImmutable(in ImmutableByml root)
+        => FromImmutable(root, root);
 
     public static Byml FromImmutable(in ImmutableByml byml, in ImmutableByml root)
     {
@@ -130,6 +140,7 @@ public sealed class Byml
         _value = hashMap32;
     }
 
+    public static implicit operator Byml(BymlHashMap64 hashMap64) => new(hashMap64);
     public Byml(BymlHashMap64 hashMap64)
     {
         Type = BymlNodeType.HashMap64;

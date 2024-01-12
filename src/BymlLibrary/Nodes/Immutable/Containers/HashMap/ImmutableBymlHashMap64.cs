@@ -133,7 +133,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             emitter.Builder.Append('{');
             for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];
-                emitter.Builder.Append($"0x{hash:x2}: ");
+                emitter.Builder.Append($"0x{hash:x16}: ");
                 emitter.EmitNode(node, root);
                 if (++i < Count) {
                     emitter.Builder.Append(", ");
@@ -150,7 +150,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             }
 
             emitter.IndentLine();
-            emitter.Builder.Append($"0x{hash:x2}");
+            emitter.Builder.Append($"0x{hash:x16}");
             emitter.Builder.Append(": ");
             emitter.IsInline = true;
             emitter.IsIndented = false;

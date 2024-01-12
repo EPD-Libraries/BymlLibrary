@@ -111,14 +111,14 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
-        emitter.Builder.Append($"!h");
+        emitter.Builder.Append($"!h32");
         emitter.NewLine();
 
         if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
             emitter.Builder.Append('{');
             for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];
-                emitter.Builder.Append($"0x{hash:x2}: ");
+                emitter.Builder.Append($"0x{hash:x8}: ");
                 emitter.EmitNode(node, root);
                 if (++i < Count) {
                     emitter.Builder.Append(", ");
@@ -135,7 +135,7 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
             }
 
             emitter.IndentLine();
-            emitter.Builder.Append($"0x{hash:x2}");
+            emitter.Builder.Append($"0x{hash:x8}");
             emitter.Builder.Append(": ");
             emitter.IsInline = true;
             emitter.IsIndented = false;

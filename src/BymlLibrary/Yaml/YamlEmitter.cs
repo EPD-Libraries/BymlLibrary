@@ -68,18 +68,18 @@ public class YamlEmitter
         }
         else if (byml.Type == BymlNodeType.UInt32) {
             Builder.Append("!u ");
-            Builder.Append($"0x{byml.GetUInt32():X2}");
+            Builder.Append($"0x{byml.GetUInt32():x}");
         }
         else if (byml.Type == BymlNodeType.Int64) {
-            Builder.Append("!s64 ");
+            Builder.Append("!l ");
             Builder.Append(byml.GetInt64());
         }
         else if (byml.Type == BymlNodeType.UInt64) {
-            Builder.Append("!u64 ");
-            Builder.Append($"0x{byml.GetUInt64():X2}");
+            Builder.Append("!ul ");
+            Builder.Append($"0x{byml.GetUInt64():x}");
         }
         else if (byml.Type == BymlNodeType.Double) {
-            Builder.Append("!f64 ");
+            Builder.Append("!d ");
             Builder.Append(byml.GetDouble());
         }
         else if (byml.Type == BymlNodeType.Null) {
