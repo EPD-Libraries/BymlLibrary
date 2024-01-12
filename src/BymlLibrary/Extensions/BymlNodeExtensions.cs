@@ -36,6 +36,8 @@ public static class BymlNodeExtensions
     public static bool IsSpecialValueType(this BymlNodeType type)
     {
         return type is
+            BymlNodeType.Binary or
+            BymlNodeType.BinaryAligned or
             BymlNodeType.Int64 or
             BymlNodeType.UInt64 or
             BymlNodeType.Double;
