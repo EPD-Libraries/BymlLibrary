@@ -101,7 +101,7 @@ public sealed class Byml
 
     public void WriteBinary(in Stream stream, Endianness endianness, ushort version = 7)
     {
-        BymlWriter writer = new(this, stream, endianness, version);
+        BymlWriterContext writer = new(this, stream, endianness, version);
         writer.Write();
     }
 
