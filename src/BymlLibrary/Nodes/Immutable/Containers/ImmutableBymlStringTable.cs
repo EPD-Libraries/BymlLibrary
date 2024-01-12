@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace BymlLibrary.Nodes.Immutable.Containers;
 
-public unsafe readonly ref struct ImmutableBymlStringTable(Span<byte> data, int offset, int count)
+public readonly ref struct ImmutableBymlStringTable(Span<byte> data, int offset, int count)
 {
     /// <summary>
     /// Span of the BYMl data
@@ -26,7 +26,7 @@ public unsafe readonly ref struct ImmutableBymlStringTable(Span<byte> data, int 
     /// The string offsets in this container
     /// </summary>
     private readonly ReadOnlySpan<int> _offsets
-        = data[(offset + sizeof(BymlContainer))..].ReadSpan<int>(++count);
+        = data[(offset + BymlContainer.SIZE)..].ReadSpan<int>(++count);
 
     public readonly Span<byte> this[int index] {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

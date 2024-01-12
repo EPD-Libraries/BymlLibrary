@@ -39,7 +39,7 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
             .ReadSpan<Entry>(count);
 
     /// <summary>
-    /// Container offset entries
+    /// Container entry types
     /// </summary>
     private readonly Span<BymlNodeType> _types = count == 0 ? []
         : data[(offset + BymlContainer.SIZE + (Entry.SIZE * count))..]
