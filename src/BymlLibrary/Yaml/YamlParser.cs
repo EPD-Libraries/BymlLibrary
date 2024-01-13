@@ -56,6 +56,10 @@ internal class YamlParser
                 return f32Value;
             }
 
+            if (scalar.Value.Equals("null", StringComparison.CurrentCultureIgnoreCase)) {
+                return new();
+            }
+
             bool isTrue = scalar.Value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (isTrue || scalar.Value.Equals("false", StringComparison.CurrentCultureIgnoreCase)) {
                 return isTrue;
