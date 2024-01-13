@@ -39,8 +39,12 @@ internal class YamlParser
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static Byml ParseScalar(YamlScalarNode scalar)
     {
-        if (string.IsNullOrEmpty(scalar.Value)) {
+        if (scalar.Value is null) {
             return new();
+        }
+
+        if (scalar.Value.AsSpan().IsEmpty) {
+            return new(string.Empty);
         }
 
         if (scalar.Tag.IsEmpty) {
