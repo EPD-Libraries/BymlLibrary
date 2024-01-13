@@ -11,7 +11,7 @@ internal class YamlEmitter
     private const byte NEWLINE_CHAR_UTF8 = (byte)'\n';
 
     public static readonly SearchValues<byte> SpecialChars
-        = SearchValues.Create("![]{}:-"u8);
+        = SearchValues.Create("-?:,[]{}#&*!|>'\"%@`"u8);
 
     public StringBuilder Builder { get; } = new();
     public int Level { get; set; } = 0;
