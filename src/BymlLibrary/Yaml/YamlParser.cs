@@ -69,7 +69,7 @@ internal class YamlParser
             "!ul" or "!u64" => Convert.ToUInt64(scalar.Value[2..], 16),
             "!l" or "!s64" => long.Parse(scalar.Value),
             "!d" or "!f64" => double.Parse(scalar.Value),
-            "!!binary" => Convert.FromBase64String(scalar.Value),
+            "!!binary" or "tag:yaml.org,2002:binary" => Convert.FromBase64String(scalar.Value),
             _ => throw new NotSupportedException($"""
                 Unsupported tag '{scalar.Tag.Value}'
                 """)
