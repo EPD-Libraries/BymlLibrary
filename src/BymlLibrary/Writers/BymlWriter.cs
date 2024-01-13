@@ -119,8 +119,7 @@ internal class BymlWriter
                 break;
             }
             case BymlNodeType.Bool: {
-                Writer.Write(byml.GetBool());
-                Writer.Move(3);
+                Writer.Write(byml.GetBool() ? 1 : 0);
                 break;
             }
             case BymlNodeType.Int: {
@@ -155,6 +154,7 @@ internal class BymlWriter
                 byte[] data = byml.GetBinary();
                 Writer.Write(data.Length);
                 Writer.Write(data);
+                Writer.Align(4);
                 break;
             }
             case BymlNodeType.BinaryAligned: {
@@ -165,7 +165,7 @@ internal class BymlWriter
                 break;
             }
             case BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double: {
-                Writer.Write((ulong)(byml._value ?? 0));
+                Writer.Write((byml._value as ulong?) ?? 0);
                 break;
             }
         }
@@ -181,6 +181,10 @@ internal class BymlWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int WriteStringTable(ref Dictionary<string, int> strings)
     {
+        if (strings.Count <= 0) {
+            return 0;
+        }
+
         strings = strings
             .OrderBy(x => x.Key, StringComparer.Ordinal)
             .Select((x, i) => (x.Key, Index: i))
@@ -217,9 +221,31 @@ internal class BymlWriter
             _strings[str] = 0;
             return str.GetHashCode();
         }
+        else if (byml._value is byte[] data) {
+            int hash = CollectBytes((data, null));
+            _referenceNodes[byml] = hash;
+            return hash;
+        }
+        else if (byml.Type == BymlNodeType.BinaryAligned) {
+            int hash = CollectBytes(byml.GetBinaryAligned());
+            _referenceNodes[byml] = hash;
+            return hash;
+        }
         else {
             return byml._value?.GetHashCode() ?? 0;
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int CollectBytes((byte[] data, int? alignment) value)
+    {
+        HashCode hashCode = new();
+        if (value.alignment.HasValue) {
+            hashCode.Add(value.alignment.Value);
+        }
+
+        hashCode.AddBytes(value.data);
+        return hashCode.ToHashCode();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
