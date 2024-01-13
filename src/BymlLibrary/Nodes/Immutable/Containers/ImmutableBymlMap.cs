@@ -107,7 +107,9 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
             BymlNodeType type = reader.Read<BymlNodeType>();
             int value = reader.Read<int>();
 
-            ImmutableByml.ReverseNode(ref reader, value, type, reversedOffsets);
+            if (!type.IsValueType()) {
+                ImmutableByml.ReverseNode(ref reader, value, type, reversedOffsets);
+            }
         }
     }
 
