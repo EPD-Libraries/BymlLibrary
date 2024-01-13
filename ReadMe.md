@@ -7,8 +7,22 @@ Modern **B**inary **Yml** IO library written in managed C#
 ### Reading a Byml File
 
 ```cs
+using BymlLibrary;
+using Revrs;
+
 byte[] data = File.ReadAllBytes("path/to/file.byml");
 Byml byml = Byml.FromBinary(data);
+```
+
+### Reading a Byml for Read-Only use (Much Faster)
+
+```cs
+using BymlLibrary;
+using Revrs;
+
+byte[] data = File.ReadAllBytes("path/to/file.byml");
+RevrsReader reader = new(data);
+ImmutableByml byml = new(ref reader);
 ```
 
 ### Writing a Byml File
@@ -16,8 +30,15 @@ Byml byml = Byml.FromBinary(data);
 ```cs
 /* ... */
 
+// Avoid writing directly to
+// a file stream. Seeking is
+// much slower and used extensively
+// during serialization.
 using MemoryStream ms = new();
-byml.Write(ms);
+byml.WriteBinary(ms, Endianness.Little);
+
+// Write to a byte[]
+byte[] data = byml.ToBinary(Endianness.Little);
 ```
 
 ## Benchmarks
