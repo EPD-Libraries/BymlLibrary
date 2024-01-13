@@ -10,12 +10,12 @@ env:
   project_name: BymlLibrary
   authors: ArchLeaders
   description: |-
-    Modern Binary Yml IO library written in managed C#
+    Modern BYML IO library written in managed C#. Supports versions 2 to 7.
   readme: ./Readme.md
   icon: ./Icon.png
   repo: https://github.com/EPD-Libraries/BymlLibrary
   spdx: AGPL-3.0-or-later
-  tags: binary-yaml;byml;byaml;yml;zeldamods;epd;totk;botw
+  tags: binary-yaml;byml;byaml;yml;zeldamods;epd;totk;botw;byml-v7
 
 jobs:
   deploy:
