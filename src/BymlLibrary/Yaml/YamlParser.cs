@@ -112,8 +112,8 @@ internal class YamlParser
         }
 
         return mapping.Tag.Value switch {
-            "h32" => ParseHashMap32(mapping.Children),
-            "h64" => ParseHashMap64(mapping.Children),
+            "!h32" => ParseHashMap32(mapping.Children),
+            "!h64" => ParseHashMap64(mapping.Children),
             _ => throw new NotSupportedException($"""
                 Unsupported mapping tag '{mapping.Tag.Value}'
                 """)
