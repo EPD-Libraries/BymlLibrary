@@ -42,7 +42,7 @@ internal class YamlEmitter
             Builder.Append("!!file {Alignment: ");
             Span<byte> data = byml.GetBinaryAligned(out int alignment);
             Builder.Append(alignment);
-            Builder.Append(", Data: ");
+            Builder.Append(", Data: !!binary ");
             Builder.Append(Convert.ToBase64String(data));
             Builder.Append('}');
         }
