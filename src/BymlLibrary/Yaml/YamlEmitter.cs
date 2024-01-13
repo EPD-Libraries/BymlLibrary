@@ -97,6 +97,10 @@ internal class YamlEmitter
 
     public unsafe void EmitString(Span<byte> str)
     {
+        if (str.IsEmpty) {
+            Builder.Append("''");
+        }
+
         if (str.ContainsAny(SpecialChars)) {
             Builder.Append('\'');
             Builder.Append(str.ToManaged());
