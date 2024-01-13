@@ -13,6 +13,7 @@ namespace BymlLibrary;
 public readonly ref struct ImmutableByml
 {
     public readonly BymlNodeType Type;
+    public readonly Endianness Endianness;
     public readonly BymlHeader Header;
     public readonly ImmutableBymlStringTable KeyTable;
     public readonly ImmutableBymlStringTable StringTable;
@@ -39,7 +40,7 @@ public readonly ref struct ImmutableByml
             Header = reader.Read<BymlHeader, BymlHeader.Reverser>(0);
         }
 
-        if (Header.Magic is not Byml.BYML_MAGIC) {
+        if (Header.Magic != Byml.BYML_MAGIC) {
             throw new InvalidDataException(
                 $"Invalid BYML magic: '{Encoding.UTF8.GetString(BitConverter.GetBytes(Header.Magic))}'");
         }
@@ -85,6 +86,7 @@ public readonly ref struct ImmutableByml
         ref BymlContainer rootNodeHeader
             = ref _data[(_value = new(Header.RootNodeOffset)).Offset..].Read<BymlContainer>();
         Type = rootNodeHeader.Type;
+        Endianness = reader.Endianness;
     }
 
     internal ImmutableByml(Span<byte> data, int value, BymlNodeType type)

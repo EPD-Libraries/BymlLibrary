@@ -104,8 +104,7 @@ public sealed class Byml
                 """)
         };
 
-        result.Endianness = byml.Header.Magic == BYML_MAGIC
-            ? Endianness.Little : Endianness.Big;
+        result.Endianness = byml.Endianness;
         return result;
     }
 
