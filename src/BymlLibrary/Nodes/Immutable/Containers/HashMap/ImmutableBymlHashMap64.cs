@@ -127,10 +127,9 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     internal unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
         emitter.Builder.Append($"!h64");
-        emitter.NewLine();
 
         if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
-            emitter.Builder.Append('{');
+            emitter.Builder.Append(" {");
             for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];
                 emitter.Builder.Append($"0x{hash:x16}: ");
@@ -144,6 +143,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
             return;
         }
 
+        emitter.NewLine();
         foreach ((var hash, var node) in this) {
             if (!emitter.IsIndented) {
                 emitter.NewLine();
