@@ -44,7 +44,7 @@ public sealed class Byml
     /// </summary>
     internal const ushort BYML_MAGIC = 0x4259;
 
-    internal readonly object? _value;
+    public readonly object? Value;
 
     public BymlNodeType Type { get; set; }
     public Endianness Endianness { get; set; }
@@ -136,98 +136,98 @@ public sealed class Byml
     public Byml(BymlHashMap32 hashMap32)
     {
         Type = BymlNodeType.HashMap32;
-        _value = hashMap32;
+        Value = hashMap32;
     }
 
     public static implicit operator Byml(BymlHashMap64 hashMap64) => new(hashMap64);
     public Byml(BymlHashMap64 hashMap64)
     {
         Type = BymlNodeType.HashMap64;
-        _value = hashMap64;
+        Value = hashMap64;
     }
 
     public static implicit operator Byml(BymlArray array) => new(array);
     public Byml(BymlArray array)
     {
         Type = BymlNodeType.Array;
-        _value = array;
+        Value = array;
     }
 
     public static implicit operator Byml(BymlMap map) => new(map);
     public Byml(BymlMap map)
     {
         Type = BymlNodeType.Map;
-        _value = map;
+        Value = map;
     }
 
     public static implicit operator Byml(string value) => new(value);
     public Byml(string value)
     {
         Type = BymlNodeType.String;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(byte[] data) => new(data);
     public Byml(byte[] data)
     {
         Type = BymlNodeType.Binary;
-        _value = data;
+        Value = data;
     }
 
     public static implicit operator Byml((byte[] data, int alignment) value) => new(value.data, value.alignment);
     public Byml(byte[] data, int alignment)
     {
         Type = BymlNodeType.BinaryAligned;
-        _value = (data, alignment);
+        Value = (data, alignment);
     }
 
     public static implicit operator Byml(bool value) => new(value);
     public Byml(bool value)
     {
         Type = BymlNodeType.Bool;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(int value) => new(value);
     public Byml(int value)
     {
         Type = BymlNodeType.Int;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(float value) => new(value);
     public Byml(float value)
     {
         Type = BymlNodeType.Float;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(uint value) => new(value);
     public Byml(uint value)
     {
         Type = BymlNodeType.UInt32;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(long value) => new(value);
     public Byml(long value)
     {
         Type = BymlNodeType.Int64;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(ulong value) => new(value);
     public Byml(ulong value)
     {
         Type = BymlNodeType.UInt64;
-        _value = value;
+        Value = value;
     }
 
     public static implicit operator Byml(double value) => new(value);
     public Byml(double value)
     {
         Type = BymlNodeType.Double;
-        _value = value;
+        Value = value;
     }
 
     public Byml()
@@ -294,20 +294,20 @@ public sealed class Byml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T Get<T>()
     {
-        if (_value is null) {
+        if (Value is null) {
             throw new InvalidOperationException($"""
                 Cannot parse null node
                 """);
         }
 
-        if (_value is T value) {
+        if (Value is T value) {
             return value;
         }
 
         throw new InvalidDataException($"""
             Unexpected type: '{typeof(T)}'
 
-            Expected '{_value.GetType()} ({Type})' but found '{typeof(T)}'
+            Expected '{Value.GetType()} ({Type})' but found '{typeof(T)}'
             """);
     }
 }

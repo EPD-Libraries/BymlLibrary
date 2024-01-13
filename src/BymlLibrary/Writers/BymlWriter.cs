@@ -36,12 +36,6 @@ internal class BymlWriter
         int stringTableOffset = WriteStringTable(ref _strings);
         int rootNodeOffset = (int)Writer.Position;
 
-        if (_root._value is not (null or IBymlNode)) {
-            throw new InvalidOperationException("""
-                Root node must be a container type or null.
-                """);
-        }
-
         Write(_root);
 
         Writer.Seek(0);
@@ -57,7 +51,7 @@ internal class BymlWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(in Byml byml)
     {
-        if (byml._value is IBymlNode container) {
+        if (byml.Value is IBymlNode container) {
             WriteContainer(container);
         }
         else if (byml.Type.IsSpecialValueType()) {
@@ -164,8 +158,16 @@ internal class BymlWriter
                 Writer.Write(alignedData);
                 break;
             }
-            case BymlNodeType.Int64 or BymlNodeType.UInt64 or BymlNodeType.Double: {
-                Writer.Write((byml._value as ulong?) ?? 0);
+            case BymlNodeType.Int64: {
+                Writer.Write(byml.GetInt64());
+                break;
+            }
+            case BymlNodeType.UInt64: {
+                Writer.Write(byml.GetUInt64());
+                break;
+            }
+            case BymlNodeType.Double: {
+                Writer.Write(byml.GetDouble());
                 break;
             }
         }
@@ -212,16 +214,16 @@ internal class BymlWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Collect(in Byml byml)
     {
-        if (byml._value is IBymlNode container) {
+        if (byml.Value is IBymlNode container) {
             int hash = container.Collect(this);
             _referenceNodes[byml] = hash;
             return hash;
         }
-        else if (byml._value is string str) {
+        else if (byml.Value is string str) {
             _strings[str] = 0;
             return str.GetHashCode();
         }
-        else if (byml._value is byte[] data) {
+        else if (byml.Value is byte[] data) {
             int hash = CollectBytes((data, null));
             _referenceNodes[byml] = hash;
             return hash;
@@ -231,8 +233,23 @@ internal class BymlWriter
             _referenceNodes[byml] = hash;
             return hash;
         }
+        else if (byml.Value is long int64) {
+            int hash = int64.GetHashCode();
+            _referenceNodes[byml] = hash;
+            return hash;
+        }
+        else if (byml.Value is ulong uint64) {
+            int hash = uint64.GetHashCode();
+            _referenceNodes[byml] = hash;
+            return hash;
+        }
+        else if (byml.Value is double f64) {
+            int hash = f64.GetHashCode();
+            _referenceNodes[byml] = hash;
+            return hash;
+        }
         else {
-            return byml._value?.GetHashCode() ?? 0;
+            return byml.Value?.GetHashCode() ?? 0;
         }
     }
 
