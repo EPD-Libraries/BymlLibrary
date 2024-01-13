@@ -20,7 +20,7 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     void IBymlNode.Write(BymlWriter context, Action<Byml> write)
     {
-        context.WriteContainerHeader(BymlNodeType.Map, Count);
+        context.WriteContainerHeader(BymlNodeType.HashMap64, Count);
         foreach ((var key, var node) in this) {
             context.Writer.Write(key);
             write(node);
