@@ -118,6 +118,7 @@ internal class YamlParser
         return mapping.Tag.Value switch {
             "!h32" => ParseHashMap32(mapping.Children),
             "!h64" => ParseHashMap64(mapping.Children),
+            "!!file" or "tag:yaml.org,2002:file" => ParseFile(mapping.Children),
             _ => throw new NotSupportedException($"""
                 Unsupported mapping tag '{mapping.Tag.Value}'
                 """)
@@ -168,5 +169,29 @@ internal class YamlParser
         }
 
         return map;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static Byml ParseFile(in IOrderedDictionary<YamlNode, YamlNode> nodes)
+    {
+        if (!nodes.TryGetValue("Alignment", out YamlNode? alignmentNode) || !nodes.TryGetValue("Data", out YamlNode? dataNode)) {
+            throw new InvalidDataException("""
+                Invalid !!file map, could not find Alignment and/or Data
+                """);
+        }
+
+        if (alignmentNode is not YamlScalarNode alignmentScalarNode || dataNode is not YamlScalarNode dataScalarNode) {
+            throw new InvalidDataException("""
+                Invalid !!file map, Alignment and/or Data was not a valid scalar node
+                """);
+        }
+
+        if (alignmentScalarNode.Value is null || dataScalarNode.Value is null) {
+            throw new InvalidDataException("""
+                Invalid !!file map, Alignment and/or Data was null
+                """);
+        }
+
+        return (Convert.FromBase64String(dataScalarNode.Value), int.Parse(alignmentScalarNode.Value));
     }
 }
