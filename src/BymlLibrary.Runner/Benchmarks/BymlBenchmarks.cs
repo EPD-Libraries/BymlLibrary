@@ -1,7 +1,6 @@
 ﻿#pragma warning disable CS0618
 
 using BenchmarkDotNet.Attributes;
-using BymlLibrary.Legacy;
 using Revrs;
 
 namespace BymlLibrary.Runner.Benchmarks;
@@ -12,8 +11,8 @@ public class BymlBenchmarks
     private readonly byte[] _buffer = File.ReadAllBytes(@"D:\bin\Byml\ActorInfo-LE.byml");
     private readonly Byml _byml;
     private readonly string _yaml;
-    private readonly BymlFile _legacyByml;
-    private readonly string _legacyYaml;
+    // private readonly BymlFile _legacyByml;
+    // private readonly string _legacyYaml;
 
     public BymlBenchmarks()
     {
@@ -21,8 +20,6 @@ public class BymlBenchmarks
         ImmutableByml byml = new(ref reader);
         _byml = Byml.FromImmutable(byml);
         _yaml = byml.ToYaml();
-        _legacyByml = BymlFile.FromBinary(_buffer);
-        _legacyYaml = _legacyByml.ToYaml();
     }
 
     [Benchmark]
@@ -63,29 +60,5 @@ public class BymlBenchmarks
     public void FromYaml()
     {
         Byml _ = Byml.FromText(_yaml);
-    }
-
-    [Benchmark]
-    public void LegacyRead()
-    {
-        BymlFile _ = BymlFile.FromBinary(_buffer);
-    }
-
-    [Benchmark]
-    public void LegacyWrite()
-    {
-        byte[] _ = _legacyByml.ToBinary();
-    }
-
-    [Benchmark]
-    public void LegacyToYaml()
-    {
-        string _ = _legacyByml.ToYaml();
-    }
-
-    [Benchmark]
-    public void LegacyFromYaml()
-    {
-        BymlFile _ = BymlFile.FromYaml(_legacyYaml);
     }
 }
