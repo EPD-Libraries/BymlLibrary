@@ -9,9 +9,6 @@ namespace BymlLibrary.Yaml;
 
 internal class YamlParser
 {
-    private static readonly SearchValues<char> _integer = SearchValues.Create("0123456789");
-    private static readonly SearchValues<char> _decimal = SearchValues.Create(".0123456789");
-
     public static Byml Parse(string text)
     {
         StringReader reader = new(text);
@@ -47,12 +44,12 @@ internal class YamlParser
         }
 
         if (scalar.Tag.IsEmpty) {
-            if (!scalar.Value.AsSpan().ContainsAnyExcept(_integer)) {
-                return int.Parse(scalar.Value);
+            if (int.TryParse(scalar.Value, out int s32Value)) {
+                return s32Value;
             }
 
-            if (!scalar.Value.AsSpan().ContainsAnyExcept(_decimal)) {
-                return float.Parse(scalar.Value);
+            if (float.TryParse(scalar.Value, out float f32Value)) {
+                return f32Value;
             }
 
             bool isTrue = scalar.Value.Equals("true", StringComparison.CurrentCultureIgnoreCase);
