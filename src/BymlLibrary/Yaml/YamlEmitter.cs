@@ -64,7 +64,10 @@ internal class YamlEmitter
             Builder.Append(byml.GetInt());
         }
         else if (byml.Type == BymlNodeType.Float) {
-            Builder.Append(byml.GetFloat());
+            float value = byml.GetFloat();
+            Builder.Append(
+                (value % 1) == 0 ? $"{value:0.0}" : value.ToString()
+            );
         }
         else if (byml.Type == BymlNodeType.UInt32) {
             Builder.Append("!u ");
