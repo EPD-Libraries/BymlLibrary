@@ -1,5 +1,6 @@
 ﻿using BymlLibrary.Extensions;
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 
 namespace BymlLibrary.Yaml;
@@ -66,7 +67,7 @@ internal class YamlEmitter
         else if (byml.Type == BymlNodeType.Float) {
             float value = byml.GetFloat();
             Builder.Append(
-                (value % 1) == 0 ? $"{value:0.0}" : value.ToString()
+                (value % 1) == 0 ? string.Format(CultureInfo.InvariantCulture, "{0}.0", value): value.ToString(CultureInfo.InvariantCulture.NumberFormat)
             );
         }
         else if (byml.Type == BymlNodeType.UInt32) {
@@ -83,7 +84,10 @@ internal class YamlEmitter
         }
         else if (byml.Type == BymlNodeType.Double) {
             Builder.Append("!d ");
-            Builder.Append(byml.GetDouble());
+            double value = byml.GetDouble();
+            Builder.Append(
+                (value % 1) == 0 ? string.Format(CultureInfo.InvariantCulture, "{0}.0", value) : value.ToString(CultureInfo.InvariantCulture.NumberFormat)
+            );
         }
         else if (byml.Type == BymlNodeType.Null) {
             Builder.Append("null");
