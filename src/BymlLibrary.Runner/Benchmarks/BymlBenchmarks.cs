@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS0618
-
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Revrs;
 
 namespace BymlLibrary.Runner.Benchmarks;
