@@ -5,6 +5,7 @@
 	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
