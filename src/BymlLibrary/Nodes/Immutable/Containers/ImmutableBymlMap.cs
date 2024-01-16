@@ -144,7 +144,9 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
             emitter.Builder.Append(": ");
             emitter.IsInline = true;
             emitter.IsIndented = false;
+            emitter.Level++;
             emitter.EmitNode(node, root);
+            emitter.Level--;
         }
     }
 
