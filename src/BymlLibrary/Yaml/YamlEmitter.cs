@@ -106,7 +106,7 @@ internal class YamlEmitter
             return;
         }
 
-        if (str.ContainsAny(SpecialChars)) {
+        if (str.ContainsAny(SpecialChars) && !str.Contains(NEWLINE_CHAR_UTF8)) {
             Builder.Append('\'');
             Builder.Append(str.ToManaged());
             Builder.Append('\'');
@@ -119,14 +119,19 @@ internal class YamlEmitter
         }
 
         Level++;
-        int index = 0;
+        Builder.Append("|-\n");
 
-        while ((index = str[index..].IndexOf(NEWLINE_CHAR_UTF8)) > -1) {
-            Builder.AppendLine("|-");
+        int index = 0;
+        int length;
+
+        while ((length = str[index..].IndexOf(NEWLINE_CHAR_UTF8)) > -1) {
             IndentLine();
-            Builder.Append(str[..index].ToManaged());
-            Builder.Append(NEWLINE_CHAR);
+            Builder.Append(str[index..].ToManaged()[..++length]);
+            index += length;
         }
+
+        IndentLine();
+        Builder.Append(str[index..].ToManaged());
 
         Level--;
     }
