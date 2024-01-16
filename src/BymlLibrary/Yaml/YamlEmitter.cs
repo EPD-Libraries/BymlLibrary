@@ -72,7 +72,7 @@ internal class YamlEmitter
         }
         else if (byml.Type == BymlNodeType.UInt32) {
             Builder.Append("!u ");
-            Builder.Append($"0x{byml.GetUInt32():x}");
+            Builder.Append($"0x{byml.GetUInt32():x8}");
         }
         else if (byml.Type == BymlNodeType.Int64) {
             Builder.Append("!l ");
@@ -80,7 +80,7 @@ internal class YamlEmitter
         }
         else if (byml.Type == BymlNodeType.UInt64) {
             Builder.Append("!ul ");
-            Builder.Append($"0x{byml.GetUInt64():x}");
+            Builder.Append($"0x{byml.GetUInt64():x16}");
         }
         else if (byml.Type == BymlNodeType.Double) {
             Builder.Append("!d ");
