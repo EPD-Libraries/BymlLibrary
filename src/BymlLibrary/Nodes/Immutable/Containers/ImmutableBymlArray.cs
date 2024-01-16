@@ -113,7 +113,10 @@ public readonly ref struct ImmutableBymlArray(Span<byte> data, int offset, int c
         }
 
         foreach (var node in this) {
-            emitter.NewLine();
+            if (!emitter.IsIndented) {
+                emitter.NewLine();
+            }
+
             emitter.IndentLine();
             emitter.Builder.Append("- ");
             emitter.IsIndented = true;
