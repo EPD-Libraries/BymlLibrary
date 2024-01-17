@@ -128,7 +128,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     {
         emitter.Builder.Append($"!h64");
 
-        if (Count <= 5 && !emitter.IsIndented && !HasContainerNodes()) {
+        if (!emitter.IsIndented && !HasContainerNodes()) {
             emitter.Builder.Append(" {");
             for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];

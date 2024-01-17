@@ -99,7 +99,7 @@ public readonly ref struct ImmutableBymlArray(Span<byte> data, int offset, int c
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
-        if (Count <= 5 && !HasContainerNodes()) {
+        if (!HasContainerNodes()) {
             emitter.Builder.Append('[');
             for (int i = 0; i < Count;) {
                 emitter.EmitNode(this[i], root);

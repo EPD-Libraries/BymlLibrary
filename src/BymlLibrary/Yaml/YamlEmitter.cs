@@ -59,7 +59,7 @@ internal class YamlEmitter
                 """);
         }
         else if (byml.Type == BymlNodeType.Bool) {
-            Builder.Append(byml.GetBool());
+            Builder.Append(byml.GetBool().ToString().ToLower());
         }
         else if (byml.Type == BymlNodeType.Int) {
             Builder.Append(byml.GetInt());
