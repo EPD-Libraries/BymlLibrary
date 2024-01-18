@@ -9,8 +9,6 @@ public class BymlBenchmarks
     private readonly byte[] _buffer = File.ReadAllBytes(@"D:\bin\Byml\ActorInfo-LE.byml");
     private readonly Byml _byml;
     private readonly string _yaml;
-    // private readonly BymlFile _legacyByml;
-    // private readonly string _legacyYaml;
 
     public BymlBenchmarks()
     {
