@@ -44,7 +44,7 @@ public class BymlArray : List<Byml>, IBymlNode
                 return false;
             }
 
-            return x.SequenceEqual(y);
+            return x.SequenceEqual(y, Byml.ValueEqualityComparer.Default);
         }
 
         public int GetHashCode([DisallowNull] BymlArray obj)
