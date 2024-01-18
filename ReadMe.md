@@ -1,4 +1,7 @@
-# Byml Library
+<div align="center">
+  <img src="https://github.com/EPD-Libraries/BymlLibrary/blob/master/icon.png" width="300vh">
+  <h1>- &nbsp; BYML Library &nbsp; -</h1>
+</div>
 
 Modern **B**inary **Yml** IO library written in managed C#
 
@@ -7,15 +10,14 @@ Supports versions **2-7**.
 > [!NOTE]
 > Some v7 nodes may not be supported, but everything used in TotK is.
 
-- [Byml Library](#byml-library)
-  - [Usage](#usage)
-    - [Reading a Byml File](#reading-a-byml-file)
-    - [Reading a Byml for Read-Only use (Much Faster)](#reading-a-byml-for-read-only-use-much-faster)
-    - [Writing a Byml File](#writing-a-byml-file)
-  - [Benchmarks](#benchmarks)
-    - [Install](#install)
-      - [NuGet](#nuget)
-      - [Build From Source](#build-from-source)
+- [Usage](#usage)
+  - [Reading a Byml File](#reading-a-byml-file)
+  - [Reading a Byml for Read-Only use (Much Faster)](#reading-a-byml-for-read-only-use-much-faster)
+  - [Writing a Byml File](#writing-a-byml-file)
+- [Benchmarks](#benchmarks)
+  - [Install](#install)
+    - [NuGet](#nuget)
+    - [Build From Source](#build-from-source)
 
 ## Usage
 
