@@ -10,13 +10,14 @@ using BymlLibrary;
 using Revrs;
 
 byte[] buffer = File.ReadAllBytes(args[0]);
+
 RevrsReader reader = new(buffer);
-ImmutableByml immutableByml = new(ref reader);
+ImmutableByml byml = new(ref reader);
 
-string yaml = immutableByml.ToYaml();
-File.WriteAllText("./Output.yml", yaml);
+string yaml = byml.ToYaml();
+Byml fromYaml = Byml.FromText(yaml);
 
-Byml byml = Byml.FromText(yaml);
-byml.WriteBinary(args[1], immutableByml.Endianness);
+File.WriteAllBytes(args[1], fromYaml.ToBinary(byml.Endianness));
+File.WriteAllText(args[2], yaml);
 
 #endif
