@@ -2,9 +2,20 @@
 
 Modern **B**inary **Yml** IO library written in managed C#
 
-Supports versions 2-7.
+Supports versions **2-7**.
 
-Some v7 nodes may not be supported, but everything used in TotK is.
+> [!NOTE]
+> Some v7 nodes may not be supported, but everything used in TotK is.
+
+- [Byml Library](#byml-library)
+  - [Usage](#usage)
+    - [Reading a Byml File](#reading-a-byml-file)
+    - [Reading a Byml for Read-Only use (Much Faster)](#reading-a-byml-for-read-only-use-much-faster)
+    - [Writing a Byml File](#writing-a-byml-file)
+  - [Benchmarks](#benchmarks)
+    - [Install](#install)
+      - [NuGet](#nuget)
+      - [Build From Source](#build-from-source)
 
 ## Usage
 
@@ -47,7 +58,7 @@ byte[] data = byml.ToBinary(Endianness.Little);
 
 ## Benchmarks
 
-> Benchmarks for `Actors/ActorInfo.product.byml` (BotW for Switch)
+> Benchmarks for `Actors/ActorInfo.product.byml` (BotW for Switch | **1.9 MB**)
 
 | Method        |      Mean |    Error |   StdDev |       Gen0 |       Gen1 |      Gen2 | Allocated |
 | ------------- | --------: | -------: | -------: | ---------: | ---------: | --------: | --------: |
@@ -57,6 +68,17 @@ byte[] data = byml.ToBinary(Endianness.Little);
 | ToBinary      |  27.09 ms | 0.540 ms | 1.384 ms |   593.7500 |   437.5000 |  312.5000 |  14.66 MB |
 | ToYaml        |  35.63 ms | 0.574 ms | 0.537 ms |  1785.7143 |  1500.0000 |  214.2857 |  33.94 MB |
 | FromYaml      | 383.30 ms | 6.531 ms | 5.790 ms | 14000.0000 | 13000.0000 | 1000.0000 | 198.88 MB |
+
+> Benchmarks for `GameData/GameDataList.Product.110.byml` (TotK 1.2.1 | **12.4 MB**)
+
+| Method        |       Mean |    Error |   StdDev |       Gen0 |       Gen1 |      Gen2 |  Allocated |
+| ------------- | ---------: | -------: | -------: | ---------: | ---------: | --------: | ---------: |
+| Read          |   263.8 ms |  4.49 ms |  6.58 ms | 12500.0000 | 12000.0000 |  500.0000 |  188.49 MB |
+| ReadImmutable |   16.52 ns | 0.282 ns | 0.231 ns |          - |          - |         - |          - |
+| Write         |   275.8 ms |  5.48 ms | 14.43 ms |  2000.0000 |  1000.0000 |         - |  153.85 MB |
+| ToBinary      |   275.0 ms |  5.49 ms | 14.76 ms |  2000.0000 |  1000.0000 |         - |  164.53 MB |
+| ToYaml        |   133.6 ms |  2.54 ms |  2.61 ms |  5500.0000 |  4500.0000 |  250.0000 |  117.81 MB |
+| FromYaml      | 1,960.0 ms | 36.65 ms | 34.28 ms | 71000.0000 | 43000.0000 | 2000.0000 | 1043.85 MB |
 
 > Benchmarks for the test file (contains one of every node in a `Map`)
 
@@ -69,11 +91,12 @@ byte[] data = byml.ToBinary(Endianness.Little);
 | ToYaml        |  2.888 μs | 0.0453 μs | 0.0485 μs | 0.3090 |      - |   4.78 KB |
 | FromYaml      | 23.004 μs | 0.2572 μs | 0.2280 μs | 2.0447 | 0.1221 |  31.73 KB |
 
-> **Note:** `ns` (nanoseconds) is not `μs` (microseconds)!
+> [!NOTE]
+> `ns` (nanoseconds) is not `μs` (microseconds)
 
 ### Install
 
-[![NuGet](https://img.shields.io/nuget/v/BymlLibrary.svg)](https://www.nuget.org/packages/BymlLibrary) [![NuGet](https://img.shields.io/nuget/dt/BymlLibrary.svg)](https://www.nuget.org/packages/BymlLibrary)
+[![NuGet](https://img.shields.io/nuget/v/BymlLibrary.svg?style=for-the-badge&labelColor=2a2c33)](https://www.nuget.org/packages/BymlLibrary) [![NuGet](https://img.shields.io/nuget/dt/BymlLibrary.svg?style=for-the-badge&labelColor=2a2c33&color=32a852)](https://www.nuget.org/packages/BymlLibrary)
 
 #### NuGet
 ```powershell
