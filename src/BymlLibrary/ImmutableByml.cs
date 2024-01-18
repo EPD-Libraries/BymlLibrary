@@ -232,12 +232,17 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ReverseNode(ref RevrsReader reader, int value, BymlNodeType type, in HashSet<int> reversedOffsets)
     {
-        if (type.IsContainerType()) {
-            if (reversedOffsets.Contains(value)) {
-                return;
-            }
+        if (type.IsValueType()) {
+            return;
+        }
 
-            reversedOffsets.Add(value);
+        if (reversedOffsets.Contains(value)) {
+            return;
+        }
+
+        reversedOffsets.Add(value);
+
+        if (type.IsContainerType()) {
             ReverseContainer(ref reader, value, reversedOffsets);
         }
         else if (type.IsSpecialValueType()) {
