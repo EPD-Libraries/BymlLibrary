@@ -67,7 +67,7 @@ internal class YamlEmitter
         else if (byml.Type == BymlNodeType.Float) {
             float value = byml.GetFloat();
             Builder.Append(
-                (value % 1) == 0 ? string.Format(CultureInfo.InvariantCulture, "{0}.0", value): value.ToString(CultureInfo.InvariantCulture.NumberFormat)
+                (value % 1) == 0 ? string.Format(CultureInfo.InvariantCulture, "{0}.0", value) : value.ToString(CultureInfo.InvariantCulture.NumberFormat)
             );
         }
         else if (byml.Type == BymlNodeType.UInt32) {

@@ -4,6 +4,7 @@ using BymlLibrary.Nodes.Containers.HashMap;
 using BymlLibrary.Writers;
 using BymlLibrary.Yaml;
 using Revrs;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace BymlLibrary;
