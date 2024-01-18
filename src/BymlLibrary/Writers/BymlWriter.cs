@@ -11,8 +11,7 @@ internal class BymlWriter
     private readonly Byml _root;
     private readonly ushort _version;
 
-    private readonly Dictionary<Byml, int> _referenceNodes = [];
-    private readonly Dictionary<int, int> __referenceNodeOffsets = [];
+    private readonly BymlNodeCache _nodeCache = new();
 
     private Dictionary<string, int> _keys = [];
     private Dictionary<string, int> _strings = [];
@@ -82,24 +81,18 @@ internal class BymlWriter
         container.Write(this, WriteNode);
 
         foreach ((long offset, Byml node) in staged) {
-            if (!_referenceNodes.TryGetValue(node, out int hash)) {
-                throw new InvalidOperationException($"""
-                    Collection failed to collect '{node}'
-                    """);
-            }
-
             int currentPosition = (int)Writer.Position;
-            if (__referenceNodeOffsets.TryGetValue(hash, out int cachedOffset)) {
+            if (_nodeCache.Lookup(node, out int hash, out int bucket) is int cachedOffset) {
                 Writer.Seek(offset);
                 Writer.Write(cachedOffset);
                 Writer.Seek(currentPosition);
             }
             else {
-                __referenceNodeOffsets.Add(hash, currentPosition);
                 Writer.Seek(offset);
                 Writer.Write(currentPosition);
                 Writer.Seek(currentPosition);
                 Write(node);
+                _nodeCache.UpdateOffset(hash, bucket, node, currentPosition);
             }
         }
     }
@@ -216,53 +209,31 @@ internal class BymlWriter
     {
         if (byml.Value is IBymlNode container) {
             int hash = container.Collect(this);
-            _referenceNodes[byml] = hash;
+            _nodeCache[byml] = hash;
             return hash;
         }
         else if (byml.Value is string str) {
-            _strings[str] = 0;
-            return str.GetHashCode();
+            _strings.TryAdd(str, 0);
+            return GetValueNodeHashCode(byml);
         }
         else if (byml.Value is byte[] data) {
-            int hash = CollectBytes((data, null));
-            _referenceNodes[byml] = hash;
+            int hash = CollectBytes((data, null), byml.Type);
+            _nodeCache[byml] = hash;
             return hash;
         }
         else if (byml.Type == BymlNodeType.BinaryAligned) {
-            int hash = CollectBytes(byml.GetBinaryAligned());
-            _referenceNodes[byml] = hash;
+            int hash = CollectBytes(byml.GetBinaryAligned(), byml.Type);
+            _nodeCache[byml] = hash;
             return hash;
         }
-        else if (byml.Value is long int64) {
-            int hash = int64.GetHashCode();
-            _referenceNodes[byml] = hash;
-            return hash;
-        }
-        else if (byml.Value is ulong uint64) {
-            int hash = uint64.GetHashCode();
-            _referenceNodes[byml] = hash;
-            return hash;
-        }
-        else if (byml.Value is double f64) {
-            int hash = f64.GetHashCode();
-            _referenceNodes[byml] = hash;
+        else if (byml.Type.IsSpecialValueType()) {
+            int hash = GetValueNodeHashCode(byml);
+            _nodeCache[byml] = hash;
             return hash;
         }
         else {
-            return byml.Value?.GetHashCode() ?? 0;
+            return GetValueNodeHashCode(byml);
         }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int CollectBytes((byte[] data, int? alignment) value)
-    {
-        HashCode hashCode = new();
-        if (value.alignment.HasValue) {
-            hashCode.Add(value.alignment.Value);
-        }
-
-        hashCode.AddBytes(value.data);
-        return hashCode.ToHashCode();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -270,4 +241,26 @@ internal class BymlWriter
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetKeyIndex(string key) => _keys[key];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int CollectBytes((byte[] data, int? alignment) value, BymlNodeType bymlNodeType)
+    {
+        HashCode hashCode = new();
+        if (value.alignment.HasValue) {
+            hashCode.Add(value.alignment.Value);
+        }
+
+        hashCode.Add(bymlNodeType.GetHashCode());
+        hashCode.AddBytes(value.data);
+        return hashCode.ToHashCode();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetValueNodeHashCode(Byml byml)
+    {
+        HashCode hashCode = new();
+        hashCode.Add(byml.Type.GetHashCode());
+        hashCode.Add(byml.Value?.GetHashCode());
+        return hashCode.ToHashCode();
+    }
 }

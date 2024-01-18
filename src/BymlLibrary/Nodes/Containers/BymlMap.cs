@@ -1,5 +1,6 @@
 ﻿using BymlLibrary.Writers;
 using Revrs;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -46,6 +47,27 @@ public class BymlMap : Dictionary<string, Byml>, IBymlNode
             {
                 slice[0..3].Reverse();
             }
+        }
+    }
+
+    internal class ValueEqualityComparer : IEqualityComparer<BymlMap>
+    {
+        public bool Equals(BymlMap? x, BymlMap? y)
+        {
+            if (x is null || y is null) {
+                return y == x;
+            }
+
+            if (x.Count != y.Count) {
+                return false;
+            }
+
+            return x.Keys.SequenceEqual(y.Keys) && x.Values.SequenceEqual(y.Values, Byml.ValueEqualityComparer.Default);
+        }
+
+        public int GetHashCode([DisallowNull] BymlMap obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }

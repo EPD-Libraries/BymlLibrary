@@ -1,4 +1,5 @@
 ﻿using BymlLibrary.Writers;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace BymlLibrary.Nodes.Containers;
@@ -28,6 +29,27 @@ public class BymlArray : List<Byml>, IBymlNode
 
         foreach (var node in this) {
             write(node);
+        }
+    }
+
+    internal class ValueEqualityComparer : IEqualityComparer<BymlArray>
+    {
+        public bool Equals(BymlArray? x, BymlArray? y)
+        {
+            if (x is null || y is null) {
+                return y == x;
+            }
+
+            if (x.Count != y.Count) {
+                return false;
+            }
+
+            return x.SequenceEqual(y);
+        }
+
+        public int GetHashCode([DisallowNull] BymlArray obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -311,4 +311,61 @@ public sealed class Byml
             Expected '{Value.GetType()} ({Type})' but found '{typeof(T)}'
             """);
     }
+
+    internal class ValueEqualityComparer : IEqualityComparer<Byml>
+    {
+        private static readonly BymlHashMap32.ValueEqualityComparer _hashMap32Comparer = new();
+        private static readonly BymlHashMap64.ValueEqualityComparer _hashMap64Comparer = new();
+        private static readonly BymlArray.ValueEqualityComparer _arrayComparer = new();
+        private static readonly BymlMap.ValueEqualityComparer _mapComparer = new();
+        private static readonly ValueEqualityComparer _default = new();
+
+        public static ValueEqualityComparer Default => _default;
+
+        public bool Equals(Byml? x, Byml? y)
+        {
+            if (x?.Type != y?.Type) {
+                return false;
+            }
+
+            if (x?.Value == y?.Value) {
+                return true;
+            }
+
+            if (x?.Value is null || y?.Value is null) {
+                return false;
+            }
+
+            return x.Type switch {
+                BymlNodeType.HashMap32 => _hashMap32Comparer.Equals(x.GetHashMap32(), y.GetHashMap32()),
+                BymlNodeType.HashMap64 => _hashMap64Comparer.Equals(x.GetHashMap64(), y.GetHashMap64()),
+                BymlNodeType.Map => _mapComparer.Equals(x.GetMap(), y.GetMap()),
+                BymlNodeType.Array => _arrayComparer.Equals(x.GetArray(), y.GetArray()),
+                BymlNodeType.String => x.Value.GetHashCode() == y.Value.GetHashCode(),
+                BymlNodeType.Binary => x.GetBinary().SequenceEqual(y.GetBinary()),
+                BymlNodeType.BinaryAligned => CompareBinaryAligned(x.GetBinaryAligned(), y.GetBinaryAligned()),
+                BymlNodeType.Bool => x.GetBool() == y.GetBool(),
+                BymlNodeType.Int => x.GetInt() == y.GetInt(),
+                BymlNodeType.UInt32 => x.GetUInt32() == y.GetUInt32(),
+                BymlNodeType.Float => x.GetFloat() == y.GetFloat(),
+                BymlNodeType.Int64 => x.GetInt64() == y.GetInt64(),
+                BymlNodeType.UInt64 => x.GetUInt64() == y.GetUInt64(),
+                BymlNodeType.Double => x.GetDouble() == y.GetDouble(),
+                _ => throw new NotImplementedException($"""
+                A comparer for the node type '{x.Type}' is not implemented
+                """),
+            };
+        }
+
+        public int GetHashCode([DisallowNull] Byml obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool CompareBinaryAligned((byte[] data, int alignment) x, (byte[] data, int alignment) y)
+        {
+            return x.alignment == y.alignment && x.data.SequenceEqual(y.data);
+        }
+    }
 }
