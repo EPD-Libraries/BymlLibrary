@@ -15,7 +15,7 @@ public class BymlOperationsTests
         BinaryAligned: !!file {Alignment: 16, Data: !!binary QmluYXJ5IFZhbHVlIEFsaQ==}
         Map: {MapKey_A: 3.1415927, MapKey_B: Map_Value}
         Array: [!d NaN, Array_Value]
-        Bool: True
+        Bool: true
         Int: 2147483647
         Float: 3.1415927
         UInt32: !u 0xffffffff
