@@ -13,6 +13,8 @@ internal class YamlEmitter
 
     public static readonly SearchValues<byte> SpecialChars
         = SearchValues.Create("-?:,[]{}#&*!|>'\"%@`"u8);
+    public static readonly SearchValues<byte> Numaric
+        = SearchValues.Create("-+0123456789.\0"u8);
 
     public StringBuilder Builder { get; } = new();
     public int Level { get; set; } = 0;
@@ -106,17 +108,21 @@ internal class YamlEmitter
             return;
         }
 
-        if (str.ContainsAny(SpecialChars) && !str.Contains(NEWLINE_CHAR_UTF8)) {
-            Builder.Append('\'');
+        if (str.Contains(NEWLINE_CHAR_UTF8)) {
+            goto Literal;
+        }
+
+        if (str.ContainsAny(SpecialChars) || !str.ContainsAnyExcept(Numaric)) {
+            Builder.Append('"');
             Builder.Append(str.ToManaged());
-            Builder.Append('\'');
+            Builder.Append('"');
             return;
         }
 
-        if (!str.Contains(NEWLINE_CHAR_UTF8)) {
-            Builder.Append(str.ToManaged());
-            return;
-        }
+        Builder.Append(str.ToManaged());
+        return;
+
+    Literal:
 
         Level++;
         Builder.Append("|-\n");
