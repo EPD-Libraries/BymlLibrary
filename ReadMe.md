@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/EPD-Libraries/BymlLibrary/blob/master/icon.png" width="300vh">
+  <img src="https://github.com/EPD-Libraries/BymlLibrary/blob/master/icon.png" width="100vh">
   <h1>- &nbsp; BYML Library &nbsp; -</h1>
 </div>
 
