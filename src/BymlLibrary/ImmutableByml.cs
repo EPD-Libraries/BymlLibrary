@@ -200,7 +200,7 @@ public readonly ref struct ImmutableByml
     public readonly uint GetUInt32()
     {
         Type.Assert(BymlNodeType.UInt32);
-        return (uint)_value.UInt32;
+        return _value.UInt32;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
