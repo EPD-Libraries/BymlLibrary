@@ -1,6 +1,7 @@
 ﻿using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Nodes.Containers.HashMap;
 using System.Runtime.CompilerServices;
+using YamlDotNet.Core;
 using YamlDotNet.Helpers;
 using YamlDotNet.RepresentationModel;
 
@@ -44,6 +45,10 @@ internal class YamlParser
 
         if (scalar.Value.AsSpan().IsEmpty) {
             return new(string.Empty);
+        }
+
+        if (scalar.Style is ScalarStyle.DoubleQuoted or ScalarStyle.SingleQuoted or ScalarStyle.Literal or ScalarStyle.Folded) {
+            return scalar.Value;
         }
 
         if (scalar.Tag.IsEmpty) {
