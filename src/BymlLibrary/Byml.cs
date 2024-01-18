@@ -109,10 +109,11 @@ public sealed class Byml
         return result;
     }
 
-    public byte[] ToBinary(Endianness endianness, ushort version = 7)
+    public byte[] ToBinary(Endianness? endianness = null, ushort version = 7)
     {
+        endianness ??= Endianness;
         MemoryStream ms = new();
-        WriteBinary(ms, endianness, version);
+        WriteBinary(ms, endianness.Value, version);
         return ms.ToArray();
     }
 
@@ -352,8 +353,8 @@ public sealed class Byml
                 BymlNodeType.UInt64 => x.GetUInt64() == y.GetUInt64(),
                 BymlNodeType.Double => x.GetDouble() == y.GetDouble(),
                 _ => throw new NotImplementedException($"""
-                A comparer for the node type '{x.Type}' is not implemented
-                """),
+                    A comparer for the node type '{x.Type}' is not implemented
+                    """),
             };
         }
 
