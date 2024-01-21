@@ -9,6 +9,12 @@ public class BymlNodeCache
 
     public int this[Byml node] {
         set {
+            if (_hashes.ContainsKey(node)) {
+                // If the node address already exists
+                // then it will match the cached node
+                return;
+            }
+
             if (!_storage.TryGetValue(node.Type, out var buckets)) {
                 _storage[node.Type] = buckets = [
                     new() {
@@ -25,11 +31,11 @@ public class BymlNodeCache
                 // If the colliding node matches
                 // leave it as is
                 if (Byml.ValueEqualityComparer.Default.Equals(node, buckets[index][value].Node)) {
-                    goto Update;
+                    goto Inject;
                 }
             }
 
-        Update:
+        Inject:
             _hashes.Add(node, (value, index));
         }
     }
