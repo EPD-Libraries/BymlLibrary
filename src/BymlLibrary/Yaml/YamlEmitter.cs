@@ -7,6 +7,11 @@ namespace BymlLibrary.Yaml;
 
 internal class YamlEmitter
 {
+    /// <summary>
+    /// The max amount of children in a container node to trigger a flow style scalar (inline)
+    /// </summary>
+    public static int FlowContainerStyleMaxChildren { get; set; } = 8;
+
     private const string INDENT = "  ";
     private const char NEWLINE_CHAR = '\n';
     private const byte NEWLINE_CHAR_UTF8 = (byte)'\n';
