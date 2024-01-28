@@ -3,6 +3,7 @@ using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Structures;
 using Revrs;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace BymlLibrary.Writers;
 
@@ -192,7 +193,7 @@ internal class BymlWriter
         int previousStringOffset = ((strings.Count + 1) * sizeof(uint)) + BymlContainer.SIZE;
         Writer.Write(previousStringOffset);
         foreach (var str in strings.Keys) {
-            Writer.Write(previousStringOffset += str.Length + 1);
+            Writer.Write(previousStringOffset += Encoding.UTF8.GetByteCount(str) + 1);
         }
 
         foreach (var str in strings.Keys) {
