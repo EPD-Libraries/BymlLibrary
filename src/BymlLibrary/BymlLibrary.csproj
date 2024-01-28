@@ -30,7 +30,7 @@
     <PackageReference Include="Revrs" Version="1.0.1" />
     <PackageReference Include="Syroot.BinaryData" Version="5.2.2" />
     <PackageReference Include="Syroot.Maths" Version="1.5.3" />
-    <PackageReference Include="YamlDotNet" Version="13.7.1" />
+    <PackageReference Include="YamlDotNet" Version="15.1.0" />
   </ItemGroup>
 
 </Project>
