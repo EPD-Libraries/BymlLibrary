@@ -40,6 +40,14 @@ public enum BymlNodeType : byte
 
 public sealed class Byml
 {
+    public static class YamlConfig
+    {
+        /// <summary>
+        /// The max amount of children in a container node to trigger a flow style scalar (inline)
+        /// </summary>
+        public static int InlineContainerMaxCount { get; set; } = 8;
+    }
+
     /// <summary>
     /// <c>YB</c>
     /// </summary>

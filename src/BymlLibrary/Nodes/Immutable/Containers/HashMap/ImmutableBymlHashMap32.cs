@@ -113,7 +113,7 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
     {
         emitter.Builder.Append($"!h32");
 
-        if (!emitter.IsIndented && Count < YamlEmitter.FlowContainerStyleMaxChildren && !HasContainerNodes()) {
+        if (!emitter.IsIndented && Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) {
             emitter.Builder.Append(" {");
             for (int i = 0; i < Count;) {
                 var (hash, node) = this[i];

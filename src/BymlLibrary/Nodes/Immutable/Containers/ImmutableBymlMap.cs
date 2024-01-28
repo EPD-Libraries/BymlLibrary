@@ -116,7 +116,7 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
     {
-        if (Count < YamlEmitter.FlowContainerStyleMaxChildren && !HasContainerNodes()) {
+        if (Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) {
             emitter.Builder.Append('{');
             for (int i = 0; i < Count;) {
                 var (keyIndex, node) = this[i];
