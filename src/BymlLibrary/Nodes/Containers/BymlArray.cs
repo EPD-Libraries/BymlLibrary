@@ -6,6 +6,16 @@ namespace BymlLibrary.Nodes.Containers;
 
 public class BymlArray : List<Byml>, IBymlNode
 {
+    public int GetValueHash()
+    {
+        HashCode hashCode = new();
+        foreach (var node in this) {
+            hashCode.Add(Byml.ValueEqualityComparer.Default.GetHashCode(node));
+        }
+
+        return hashCode.ToHashCode();
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     int IBymlNode.Collect(in BymlWriter writer)
     {

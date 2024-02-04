@@ -6,6 +6,7 @@ using BymlLibrary.Yaml;
 using Revrs;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BymlLibrary;
 
@@ -366,9 +367,40 @@ public sealed class Byml
             };
         }
 
-        public int GetHashCode([DisallowNull] Byml obj)
+        public int GetHashCode([DisallowNull] Byml byml)
         {
-            throw new NotImplementedException();
+            if (byml.Value is IBymlNode container) {
+                return container.GetValueHash();
+            }
+            else {
+                return byml.Type switch {
+                    BymlNodeType.Binary => GetBinaryNodeHashCode((byml.GetBinary(), null), byml.Type),
+                    BymlNodeType.BinaryAligned => GetBinaryNodeHashCode(byml.GetBinaryAligned(), byml.Type),
+                    _ => GetValueNodeHashCode(byml)
+                };
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetBinaryNodeHashCode((byte[] data, int? alignment) value, BymlNodeType bymlNodeType)
+        {
+            HashCode hashCode = new();
+            if (value.alignment.HasValue) {
+                hashCode.Add(value.alignment.Value);
+            }
+
+            hashCode.Add(bymlNodeType.GetHashCode());
+            hashCode.AddBytes(value.data);
+            return hashCode.ToHashCode();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetValueNodeHashCode(Byml byml)
+        {
+            HashCode hashCode = new();
+            hashCode.Add(byml.Type.GetHashCode());
+            hashCode.Add(byml.Value?.GetHashCode());
+            return hashCode.ToHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

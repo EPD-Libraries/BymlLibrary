@@ -6,6 +6,9 @@ namespace BymlLibrary.Nodes.Containers;
 internal interface IBymlNode
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int GetValueHash();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int Collect(in BymlWriter writer);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

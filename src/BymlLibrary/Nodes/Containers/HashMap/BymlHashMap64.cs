@@ -6,6 +6,17 @@ namespace BymlLibrary.Nodes.Containers.HashMap;
 
 public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
 {
+    public int GetValueHash()
+    {
+        HashCode hashCode = new();
+        foreach ((var key, var node) in this) {
+            hashCode.Add(key);
+            hashCode.Add(Byml.ValueEqualityComparer.Default.GetHashCode(node));
+        }
+
+        return hashCode.ToHashCode();
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     int IBymlNode.Collect(in BymlWriter writer)
     {

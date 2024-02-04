@@ -215,25 +215,25 @@ internal class BymlWriter
         }
         else if (byml.Value is string str) {
             _strings.TryAdd(str, 0);
-            return GetValueNodeHashCode(byml);
+            return Byml.ValueEqualityComparer.GetValueNodeHashCode(byml);
         }
         else if (byml.Value is byte[] data) {
-            int hash = CollectBytes((data, null), byml.Type);
+            int hash = Byml.ValueEqualityComparer.GetBinaryNodeHashCode((data, null), byml.Type);
             _nodeCache[byml] = hash;
             return hash;
         }
         else if (byml.Type == BymlNodeType.BinaryAligned) {
-            int hash = CollectBytes(byml.GetBinaryAligned(), byml.Type);
+            int hash = Byml.ValueEqualityComparer.GetBinaryNodeHashCode(byml.GetBinaryAligned(), byml.Type);
             _nodeCache[byml] = hash;
             return hash;
         }
         else if (byml.Type.IsSpecialValueType()) {
-            int hash = GetValueNodeHashCode(byml);
+            int hash = Byml.ValueEqualityComparer.GetValueNodeHashCode(byml);
             _nodeCache[byml] = hash;
             return hash;
         }
         else {
-            return GetValueNodeHashCode(byml);
+            return Byml.ValueEqualityComparer.GetValueNodeHashCode(byml);
         }
     }
 
@@ -242,26 +242,4 @@ internal class BymlWriter
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetKeyIndex(string key) => _keys[key];
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int CollectBytes((byte[] data, int? alignment) value, BymlNodeType bymlNodeType)
-    {
-        HashCode hashCode = new();
-        if (value.alignment.HasValue) {
-            hashCode.Add(value.alignment.Value);
-        }
-
-        hashCode.Add(bymlNodeType.GetHashCode());
-        hashCode.AddBytes(value.data);
-        return hashCode.ToHashCode();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetValueNodeHashCode(Byml byml)
-    {
-        HashCode hashCode = new();
-        hashCode.Add(byml.Type.GetHashCode());
-        hashCode.Add(byml.Value?.GetHashCode());
-        return hashCode.ToHashCode();
-    }
 }

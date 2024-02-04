@@ -2,7 +2,7 @@
   "profiles": {
     "BymlLibrary.Runner": {
       "commandName": "Project",
-      "commandLineArgs": "\"D:\\bin\\nxe\\(src)-GameDataList.Product.110.byml\" \"D:\\bin\\nxe\\GameDataList.Product.110.byml\" \"D:\\bin\\nxe\\output.yml\""
+      "commandLineArgs": "\"D:\\bin\\Byml-v7\\ActorInfo.product.byml\" \"D:\\bin\\Byml-v7\\(md)-ActorInfo.product.byml\" \"D:\\bin\\Byml-v7\\ActorInfo.product.yml\""
     }
   }
 }
