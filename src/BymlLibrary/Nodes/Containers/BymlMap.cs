@@ -50,7 +50,7 @@ public class BymlMap : Dictionary<string, Byml>, IBymlNode
         }
     }
 
-    internal class ValueEqualityComparer : IEqualityComparer<BymlMap>
+    public class ValueEqualityComparer : IEqualityComparer<BymlMap>
     {
         public bool Equals(BymlMap? x, BymlMap? y)
         {

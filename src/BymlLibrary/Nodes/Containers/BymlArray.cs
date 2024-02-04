@@ -32,7 +32,7 @@ public class BymlArray : List<Byml>, IBymlNode
         }
     }
 
-    internal class ValueEqualityComparer : IEqualityComparer<BymlArray>
+    public class ValueEqualityComparer : IEqualityComparer<BymlArray>
     {
         public bool Equals(BymlArray? x, BymlArray? y)
         {

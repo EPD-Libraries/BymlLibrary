@@ -321,7 +321,7 @@ public sealed class Byml
             """);
     }
 
-    internal class ValueEqualityComparer : IEqualityComparer<Byml>
+    public class ValueEqualityComparer : IEqualityComparer<Byml>
     {
         private static readonly BymlHashMap32.ValueEqualityComparer _hashMap32Comparer = new();
         private static readonly BymlHashMap64.ValueEqualityComparer _hashMap64Comparer = new();

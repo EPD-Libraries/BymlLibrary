@@ -34,7 +34,7 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
         context.Writer.Align(4);
     }
 
-    internal class ValueEqualityComparer : IEqualityComparer<BymlHashMap64>
+    public class ValueEqualityComparer : IEqualityComparer<BymlHashMap64>
     {
         public bool Equals(BymlHashMap64? x, BymlHashMap64? y)
         {
