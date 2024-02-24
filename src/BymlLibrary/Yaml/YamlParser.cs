@@ -107,13 +107,7 @@ internal class YamlParser
                         """);
                 }
 
-                if (string.IsNullOrEmpty(scalar.Value)) {
-                    throw new NotSupportedException("""
-                        Empty (null) keys are not supported
-                        """);
-                }
-
-                map[scalar.Value] = Parse(node);
+                map[scalar.Value ?? string.Empty] = Parse(node);
             }
 
             return map;
