@@ -4,9 +4,10 @@ using BymlLibrary.Nodes.Containers.HashMap;
 using BymlLibrary.Writers;
 using BymlLibrary.Yaml;
 using Revrs;
+using Revrs.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Text;
 
 namespace BymlLibrary;
 
@@ -69,7 +70,15 @@ public sealed class Byml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Byml FromText(string text)
     {
-        return YamlParser.Parse(text);
+        using ArraySegmentOwner<byte> utf8 = ArraySegmentOwner<byte>.Allocate(text.Length);
+        Encoding.UTF8.GetBytes(text, utf8.Segment);
+        return BymlYamlReader.Parse(utf8.Segment);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Byml FromText(ArraySegment<byte> utf8Text)
+    {
+        return BymlYamlReader.Parse(utf8Text);
     }
 
     public static Byml FromImmutable(in ImmutableByml root)
