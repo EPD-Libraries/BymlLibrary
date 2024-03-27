@@ -16,7 +16,7 @@ public class BymlNodeCache
             }
 
             if (!_storage.TryGetValue(node.Type, out var buckets)) {
-                _storage[node.Type] = buckets = [
+                _storage[node.Type] = [
                     new() {
                         { value, (node, null) }
                     }

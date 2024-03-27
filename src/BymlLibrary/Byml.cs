@@ -82,7 +82,9 @@ public sealed class Byml
     }
 
     public static Byml FromImmutable(in ImmutableByml root)
-        => FromImmutable(root, root);
+    {
+        return FromImmutable(root, root);
+    }
 
     public static Byml FromImmutable(in ImmutableByml byml, in ImmutableByml root)
     {
@@ -150,7 +152,9 @@ public sealed class Byml
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteBinary(string filename, Endianness endianness, ushort version = 7)
-        => File.WriteAllBytes(filename, ToBinary(endianness, version));
+    {
+        File.WriteAllBytes(filename, ToBinary(endianness, version));
+    }
 
     public static implicit operator Byml(BymlHashMap32 hashMap32) => new(hashMap32);
     public Byml(BymlHashMap32 hashMap32)

@@ -16,11 +16,6 @@ public readonly ref struct ImmutableBymlArray(Span<byte> data, int offset, int c
     private readonly Span<byte> _data = data;
 
     /// <summary>
-    /// The container offset (start of header)
-    /// </summary>
-    private readonly int _offset = offset;
-
-    /// <summary>
     /// The container item count
     /// </summary>
     public readonly int Count = count;

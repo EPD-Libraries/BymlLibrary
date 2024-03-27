@@ -109,7 +109,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap32);
-        return new ImmutableBymlHashMap32(_data, _value.Offset, header.Count, header.Type);
+        return new ImmutableBymlHashMap32(_data, _value.Offset, header.Count);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -117,7 +117,7 @@ public readonly ref struct ImmutableByml
     {
         ref BymlContainer header
             = ref CheckContainerHeader(BymlNodeType.HashMap64);
-        return new ImmutableBymlHashMap64(_data, _value.Offset, header.Count, header.Type);
+        return new ImmutableBymlHashMap64(_data, _value.Offset, header.Count);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace BymlLibrary.Nodes.Immutable.Containers.HashMap;
 
-public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, int count, BymlNodeType type)
+public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, int count)
 {
     /// <summary>
     /// Span of the BYMl data
@@ -17,19 +17,9 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     private readonly Span<byte> _data = data;
 
     /// <summary>
-    /// The container offset (start of header)
-    /// </summary>
-    private readonly int _offset = offset;
-
-    /// <summary>
     /// The container item count
     /// </summary>
-    private readonly int Count = count;
-
-    /// <summary>
-    /// The container item count
-    /// </summary>
-    private readonly BymlNodeType Type = type;
+    public readonly int Count = count;
 
     /// <summary>
     /// Container offset entries

@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
     <PackageReference Include="Revrs" Version="1.0.5" />
     <PackageReference Include="VYaml" Version="0.25.0" />
   </ItemGroup>

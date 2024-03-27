@@ -17,14 +17,9 @@ public readonly ref struct ImmutableBymlMap(Span<byte> data, int offset, int cou
     private readonly Span<byte> _data = data;
 
     /// <summary>
-    /// The container offset (start of header)
-    /// </summary>
-    private readonly int _offset = offset;
-
-    /// <summary>
     /// The container item count
     /// </summary>
-    private readonly int Count = count;
+    public readonly int Count = count;
 
     /// <summary>
     /// Container offset entries
