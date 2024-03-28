@@ -35,13 +35,13 @@ public class BymlBenchmarks
     public void Write()
     {
         using MemoryStream ms = new();
-        _byml.WriteBinary(ms, _byml.Endianness);
+        _byml.WriteBinary(ms, Endianness.Little);
     }
 
     [Benchmark]
     public void ToBinary()
     {
-        _ = _byml.ToBinary(_byml.Endianness);
+        _ = _byml.ToBinary(Endianness.Little);
     }
 
     [Benchmark]

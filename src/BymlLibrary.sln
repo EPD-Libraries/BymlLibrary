@@ -3,21 +3,26 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BymlLibrary", "BymlLibrary\BymlLibrary.csproj", "{4AB1B0D8-C94B-43EE-B070-D444E866725A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BymlLibrary", "BymlLibrary\BymlLibrary.csproj", "{4AB1B0D8-C94B-43EE-B070-D444E866725A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BymlLibrary.Runner", "BymlLibrary.Runner\BymlLibrary.Runner.csproj", "{653C247C-19DA-4CF5-876C-255AA3F5C0FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BymlLibrary.Runner", "BymlLibrary.Runner\BymlLibrary.Runner.csproj", "{653C247C-19DA-4CF5-876C-255AA3F5C0FD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{544C1D0A-8475-4D86-9D3B-E769525831F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BymlLibrary.Tests", "Tests\BymlLibrary.Tests\BymlLibrary.Tests.csproj", "{776FBB34-46F9-4263-8A85-1828928C3E24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BymlLibrary.Tests", "Tests\BymlLibrary.Tests\BymlLibrary.Tests.csproj", "{776FBB34-46F9-4263-8A85-1828928C3E24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F15E680D-9699-4EFC-A449-6ABEA78EB34B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VYaml", "..\lib\VYaml\VYaml\VYaml.csproj", "{1D0514EB-A024-420F-A8DC-6706B14F0200}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VYaml.Annotations", "..\lib\VYaml\VYaml.Annotations\VYaml.Annotations.csproj", "{37541DAA-FAC0-4395-ADC3-DD3729CAEA07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VYaml.SourceGenerator", "..\lib\VYaml\VYaml.SourceGenerator\VYaml.SourceGenerator.csproj", "{5FEF5572-97E7-4897-8E0A-A2F22F22860B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4AB1B0D8-C94B-43EE-B070-D444E866725A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -32,8 +37,26 @@ Global
 		{776FBB34-46F9-4263-8A85-1828928C3E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{776FBB34-46F9-4263-8A85-1828928C3E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{776FBB34-46F9-4263-8A85-1828928C3E24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D0514EB-A024-420F-A8DC-6706B14F0200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D0514EB-A024-420F-A8DC-6706B14F0200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D0514EB-A024-420F-A8DC-6706B14F0200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D0514EB-A024-420F-A8DC-6706B14F0200}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37541DAA-FAC0-4395-ADC3-DD3729CAEA07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37541DAA-FAC0-4395-ADC3-DD3729CAEA07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37541DAA-FAC0-4395-ADC3-DD3729CAEA07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37541DAA-FAC0-4395-ADC3-DD3729CAEA07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FEF5572-97E7-4897-8E0A-A2F22F22860B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FEF5572-97E7-4897-8E0A-A2F22F22860B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FEF5572-97E7-4897-8E0A-A2F22F22860B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FEF5572-97E7-4897-8E0A-A2F22F22860B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{776FBB34-46F9-4263-8A85-1828928C3E24} = {544C1D0A-8475-4D86-9D3B-E769525831F7}
+		{1D0514EB-A024-420F-A8DC-6706B14F0200} = {F15E680D-9699-4EFC-A449-6ABEA78EB34B}
+		{37541DAA-FAC0-4395-ADC3-DD3729CAEA07} = {F15E680D-9699-4EFC-A449-6ABEA78EB34B}
+		{5FEF5572-97E7-4897-8E0A-A2F22F22860B} = {F15E680D-9699-4EFC-A449-6ABEA78EB34B}
 	EndGlobalSection
 EndGlobal
