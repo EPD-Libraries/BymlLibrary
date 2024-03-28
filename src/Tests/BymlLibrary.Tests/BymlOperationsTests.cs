@@ -19,7 +19,7 @@ public class BymlOperationsTests
         Int: 2147483647
         Int64: !s64 9223372036854775807
         Map: { MapKey_A: 3.1415927, MapKey_B: Map_Value }
-        Null: null
+        "Null": null
         String: String Value
         UInt32: !u32 4294967295
         UInt64: !u64 18446744073709551615
