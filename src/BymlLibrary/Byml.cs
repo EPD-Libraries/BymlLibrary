@@ -58,7 +58,6 @@ public sealed class Byml
     public readonly object? Value;
 
     public BymlNodeType Type { get; set; }
-    public Endianness Endianness { get; set; }
 
     public static Byml FromBinary(Span<byte> data)
     {
