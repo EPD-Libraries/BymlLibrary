@@ -20,7 +20,7 @@ internal class BymlWriter
     public RevrsWriter Writer { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BymlWriter(Byml byml, in Stream stream, Endianness endianness, ushort version = 7)
+    public BymlWriter(Byml byml, in Stream stream, Endianness endianness, ushort version)
     {
         Writer = new(stream, endianness);
         _version = version;

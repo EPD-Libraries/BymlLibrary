@@ -125,15 +125,13 @@ public sealed class Byml
                 """)
         };
 
-        result.Endianness = byml.Endianness;
         return result;
     }
 
-    public byte[] ToBinary(Endianness? endianness = null, ushort version = 7)
+    public byte[] ToBinary(Endianness endianness, ushort version = 2)
     {
-        endianness ??= Endianness;
         MemoryStream ms = new();
-        WriteBinary(ms, endianness.Value, version);
+        WriteBinary(ms, endianness, version);
         return ms.ToArray();
     }
 
@@ -144,14 +142,14 @@ public sealed class Byml
     /// <param name="stream">The stream to write into (must be seekable)</param>
     /// <param name="endianness">The endianness to use when writing the file</param>
     /// <param name="version">The BYML version to use when writing the file</param>
-    public void WriteBinary(in Stream stream, Endianness endianness, ushort version = 7)
+    public void WriteBinary(in Stream stream, Endianness endianness, ushort version = 2)
     {
         BymlWriter writer = new(this, stream, endianness, version);
         writer.Write();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteBinary(string filename, Endianness endianness, ushort version = 7)
+    public void WriteBinary(string filename, Endianness endianness, ushort version = 2)
     {
         File.WriteAllBytes(filename, ToBinary(endianness, version));
     }
