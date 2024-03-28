@@ -1,6 +1,7 @@
 ﻿using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Nodes.Immutable.Containers;
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 using VYaml.Emitter;
 
@@ -44,8 +45,7 @@ public static class BymlYamlWriter
                 emitter.WriteInt32(byml.GetInt());
                 break;
             case BymlNodeType.Float:
-                int bytesWritten = Encoding.UTF8.GetBytes(byml.GetFloat().ToString("0.0############"), formattedFloatBuffer);
-                emitter.WriteScalar(formattedFloatBuffer[..bytesWritten]);
+                WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
                 emitter.Tag("!u32");
@@ -108,8 +108,7 @@ public static class BymlYamlWriter
                 emitter.WriteInt32(byml.GetInt());
                 break;
             case BymlNodeType.Float:
-                int bytesWritten = Encoding.UTF8.GetBytes(byml.GetFloat().ToString("0.0############"), formattedFloatBuffer);
-                emitter.WriteScalar(formattedFloatBuffer[..bytesWritten]);
+                WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
                 emitter.Tag("!u32");
@@ -135,6 +134,17 @@ public static class BymlYamlWriter
                     Invalid or unsupported node type '{byml.Type}'
                     """);
         }
+    }
+
+    private static void WriteFloat(ref Utf8YamlEmitter emitter, ref Span<byte> formattedFloatBuffer, float value)
+    {
+        string formatted = (value % 1) switch {
+            0 => string.Format(CultureInfo.InvariantCulture, "{0}.0", value),
+            _ => value.ToString(CultureInfo.InvariantCulture.NumberFormat)
+        };
+
+        int bytesWritten = Encoding.UTF8.GetBytes(formatted, formattedFloatBuffer);
+        emitter.WriteScalar(formattedFloatBuffer[..bytesWritten]);
     }
 
     private static void WriteBinary(ref Utf8YamlEmitter emitter, Span<byte> data)

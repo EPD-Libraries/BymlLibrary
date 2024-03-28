@@ -30,6 +30,11 @@ internal class BymlYamlReader
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static Byml ParseScalar(ref YamlParser parser)
     {
+        if (parser.IsNullScalar()) {
+            parser.SkipCurrentNode();
+            return new();
+        }
+
         if (parser.TryGetCurrentTag(out Tag tag)) {
             return tag.Suffix switch {
                 "s" or "s32" => parser.ReadScalarAsInt32(),
@@ -76,8 +81,8 @@ internal class BymlYamlReader
             return float64;
         }
 
-        if (parser.TryReadScalarAsString(out string? str) && str is not null) {
-            return str;
+        if (parser.TryReadScalarAsString(out string? str)) {
+            return str ?? string.Empty;
         }
 
         return new();
@@ -154,6 +159,8 @@ internal class BymlYamlReader
     [MethodImpl(MethodImplOptions.AggressiveOptimization)]
     private static Byml ParseFile(ref YamlParser parser)
     {
+        parser.SkipAfter(ParseEventType.MappingStart);
+
         parser.SkipCurrentNode();
         int alignment = parser.ReadScalarAsInt32();
         parser.SkipCurrentNode();
@@ -162,6 +169,7 @@ internal class BymlYamlReader
                 Invalid binary data, expected a base64 string
                 """);
 
+        parser.SkipAfter(ParseEventType.MappingEnd);
         return (Convert.FromBase64String(base64), alignment);
     }
 }
