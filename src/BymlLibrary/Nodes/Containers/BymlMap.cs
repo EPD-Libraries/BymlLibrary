@@ -6,8 +6,16 @@ using System.Runtime.InteropServices;
 
 namespace BymlLibrary.Nodes.Containers;
 
-public class BymlMap : Dictionary<string, Byml>, IBymlNode
+public class BymlMap : SortedDictionary<string, Byml>, IBymlNode
 {
+    public BymlMap() : base(StringComparer.Ordinal)
+    {
+    }
+
+    public BymlMap(IDictionary<string, Byml> values) : base(values, StringComparer.Ordinal)
+    {
+    }
+
     public int GetValueHash()
     {
         HashCode hashCode = new();
