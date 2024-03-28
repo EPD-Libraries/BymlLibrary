@@ -62,36 +62,36 @@ byte[] data = byml.ToBinary(Endianness.Little);
 
 > Benchmarks for `Actors/ActorInfo.product.byml` (BotW for Switch | **1.9 MB**)
 
-| Method        |      Mean |    Error |   StdDev |       Gen0 |       Gen1 |      Gen2 | Allocated |
-| ------------- | --------: | -------: | -------: | ---------: | ---------: | --------: | --------: |
-| Read          |  66.97 ms | 1.299 ms | 1.984 ms |  3250.0000 |  3125.0000 |  625.0000 |  40.04 MB |
-| ReadImmutable |  15.97 ns | 0.245 ns | 0.217 ns |          - |          - |         - |         - |
-| Write         |  35.86 ms | 0.712 ms | 1.266 ms |   666.6667 |   400.0000 |  266.6667 |  16.34 MB |
-| ToBinary      |  36.02 ms | 0.714 ms | 1.376 ms |   714.2857 |   500.0000 |  285.7143 |  18.24 MB |
-| ToYaml        |  35.87 ms | 0.713 ms | 0.902 ms |  1785.7143 |  1142.8571 |  214.2857 |  34.07 MB |
-| FromYaml      | 384.21 ms | 7.684 ms | 9.436 ms | 14000.0000 | 13000.0000 | 1000.0000 | 199.68 MB |
+| Method        |      Mean |      Gen0 |      Gen1 |     Gen2 | Allocated |
+| ------------- | --------: | --------: | --------: | -------: | --------: |
+| Read          |  78.26 ms | 3000.0000 | 2857.1429 | 571.4286 |  37.42 MB |
+| ReadImmutable |  15.97 ns |         - |         - |        - |         - |
+| Write         |  41.26 ms | 1250.0000 |  583.3333 | 250.0000 |  24.44 MB |
+| ToBinary      |  41.87 ms | 1307.6923 |  615.3846 | 307.6923 |  26.32 MB |
+| ToYaml        |  39.87 ms | 1615.3846 |  615.3846 | 615.3846 |  40.48 MB |
+| FromYaml      | 115.69 ms | 3000.0000 | 2800.0000 | 600.0000 |  38.74 MB |
 
 > Benchmarks for `GameData/GameDataList.Product.110.byml` (TotK 1.2.1 | **12.4 MB**)
 
-| Method        |       Mean |    Error |   StdDev |       Gen0 |       Gen1 |      Gen2 |  Allocated |
-| ------------- | ---------: | -------: | -------: | ---------: | ---------: | --------: | ---------: |
-| Read          |   263.8 ms |  4.49 ms |  6.58 ms | 12500.0000 | 12000.0000 |  500.0000 |  188.49 MB |
-| ReadImmutable |   16.52 ns | 0.282 ns | 0.231 ns |          - |          - |         - |          - |
-| Write         |   275.8 ms |  5.48 ms | 14.43 ms |  2000.0000 |  1000.0000 |         - |  153.85 MB |
-| ToBinary      |   275.0 ms |  5.49 ms | 14.76 ms |  2000.0000 |  1000.0000 |         - |  164.53 MB |
-| ToYaml        |   133.6 ms |  2.54 ms |  2.61 ms |  5500.0000 |  4500.0000 |  250.0000 |  117.81 MB |
-| FromYaml      | 1,960.0 ms | 36.65 ms | 34.28 ms | 71000.0000 | 43000.0000 | 2000.0000 | 1043.85 MB |
+| Method        |     Mean |       Gen0 |       Gen1 |     Gen2 | Allocated |
+| ------------- | -------: | ---------: | ---------: | -------: | --------: |
+| ReadImmutable | 16.52 ns |          - |          - |        - |         - |
+| Read          | 276.7 ms | 11500.0000 | 11000.0000 | 500.0000 | 174.09 MB |
+| Write         | 215.4 ms |  4000.0000 |          - |        - | 182.31 MB |
+| ToBinary      | 247.6 ms |  5000.0000 |  1000.0000 | 500.0000 | 191.16 MB |
+| ToYaml        | 169.7 ms |  5333.3333 |   333.3333 | 333.3333 | 186.38 MB |
+| FromYaml      | 496.1 ms | 13000.0000 | 12000.0000 |        - | 209.17 MB |
 
 > Benchmarks for the test file (contains one of every node in a `Map`)
 
-| Method        |      Mean |     Error |    StdDev |   Gen0 |   Gen1 | Allocated |
-| ------------- | --------: | --------: | --------: | -----: | -----: | --------: |
-| Read          |  1.587 μs | 0.0154 μs | 0.0144 μs | 0.2384 | 0.0019 |   3.68 KB |
-| ReadImmutable |  16.13 ns |  0.074 ns |  0.066 ns |      - |      - |         - |
-| Write         |  4.486 μs | 0.0872 μs | 0.1004 μs | 0.6332 | 0.0076 |   9.73 KB |
-| ToBinary      |  4.370 μs | 0.0530 μs | 0.0442 μs | 0.6714 | 0.0076 |  10.35 KB |
-| ToYaml        |  2.888 μs | 0.0453 μs | 0.0485 μs | 0.3090 |      - |   4.78 KB |
-| FromYaml      | 23.004 μs | 0.2572 μs | 0.2280 μs | 2.0447 | 0.1221 |  31.73 KB |
+| Method        |     Mean |   Gen0 |   Gen1 | Allocated |
+| ------------- | -------: | -----: | -----: | --------: |
+| Read          | 1.888 us | 0.2365 |      - |   3.65 KB |
+| ReadImmutable | 16.13 ns |      - |      - |         - |
+| Write         | 5.388 us | 0.8545 | 0.0153 |   13.2 KB |
+| ToBinary      | 5.440 us | 0.9003 | 0.0229 |  13.82 KB |
+| ToYaml        | 2.487 us | 0.3242 |      - |      5 KB |
+| FromYaml      | 6.968 us | 0.3052 |      - |   4.76 KB |
 
 > [!NOTE]
 > `ns` (nanoseconds) is not `μs` (microseconds)
