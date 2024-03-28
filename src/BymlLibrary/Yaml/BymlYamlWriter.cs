@@ -86,6 +86,9 @@ public static class BymlYamlWriter
                 return;
         }
 
+        byte[] formattedFloatRentedBuffer = ArrayPool<byte>.Shared.Rent(12);
+        Span<byte> formattedFloatBuffer = formattedFloatRentedBuffer.AsSpan()[..12];
+
         switch (byml.Type) {
             case BymlNodeType.String:
                 emitter.WriteString(byml.GetString());
@@ -105,18 +108,23 @@ public static class BymlYamlWriter
                 emitter.WriteInt32(byml.GetInt());
                 break;
             case BymlNodeType.Float:
-                emitter.WriteFloat(byml.GetFloat());
+                int bytesWritten = Encoding.UTF8.GetBytes(byml.GetFloat().ToString("0.0############"), formattedFloatBuffer);
+                emitter.WriteScalar(formattedFloatBuffer[..bytesWritten]);
                 break;
             case BymlNodeType.UInt32:
+                emitter.Tag("!u32");
                 emitter.WriteUInt32(byml.GetUInt32());
                 break;
             case BymlNodeType.Int64:
+                emitter.Tag("!s64");
                 emitter.WriteInt64(byml.GetInt64());
                 break;
             case BymlNodeType.UInt64:
+                emitter.Tag("!u64");
                 emitter.WriteUInt64(byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
+                emitter.Tag("!d");
                 emitter.WriteDouble(byml.GetDouble());
                 break;
             case BymlNodeType.Null:
