@@ -1,5 +1,6 @@
 ﻿using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Nodes.Immutable.Containers;
+using Revrs.Buffers;
 using System.Buffers;
 using System.Globalization;
 using System.Text;
@@ -75,7 +76,10 @@ public static class BymlYamlWriter
 
     public static void WriteRawString(ref Utf8YamlEmitter emitter, int index, in ImmutableBymlStringTable stringTable)
     {
-        emitter.WriteScalar(stringTable[index][..^1]);
+        Span<byte> utf8 = stringTable[index][..^1];
+        using ArraySegmentOwner<char> str = ArraySegmentOwner<char>.Allocate(utf8.Length);
+        Encoding.UTF8.GetChars(utf8, str.Segment);
+        emitter.WriteString(str.Segment);
     }
 
     public static void Write(ref Utf8YamlEmitter emitter, in Byml byml)
