@@ -6,6 +6,18 @@ namespace BymlLibrary.Nodes.Containers;
 
 public class BymlArray : List<Byml>, IBymlNode
 {
+    public BymlArray()
+    {
+    }
+
+    public BymlArray(IEnumerable<Byml> array) : base(array)
+    {
+    }
+
+    public BymlArray(int capacity) : base(capacity)
+    {
+    }
+
     public int GetValueHash()
     {
         HashCode hashCode = new();

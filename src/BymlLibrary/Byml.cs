@@ -153,11 +153,25 @@ public sealed class Byml
         File.WriteAllBytes(filename, ToBinary(endianness, version));
     }
 
+    public static implicit operator Byml(Dictionary<uint, Byml> hashMap32) => new(hashMap32);
+    public Byml(IDictionary<uint, Byml> hashMap32)
+    {
+        Type = BymlNodeType.HashMap32;
+        Value = new BymlHashMap32(hashMap32);
+    }
+
     public static implicit operator Byml(BymlHashMap32 hashMap32) => new(hashMap32);
     public Byml(BymlHashMap32 hashMap32)
     {
         Type = BymlNodeType.HashMap32;
         Value = hashMap32;
+    }
+
+    public static implicit operator Byml(Dictionary<ulong, Byml> hashMap64) => new(hashMap64);
+    public Byml(IDictionary<ulong, Byml> hashMap64)
+    {
+        Type = BymlNodeType.HashMap64;
+        Value = new BymlHashMap64(hashMap64);
     }
 
     public static implicit operator Byml(BymlHashMap64 hashMap64) => new(hashMap64);
@@ -167,11 +181,25 @@ public sealed class Byml
         Value = hashMap64;
     }
 
+    public static implicit operator Byml(Byml[] array) => new(array);
+    public Byml(IEnumerable<Byml> array)
+    {
+        Type = BymlNodeType.HashMap32;
+        Value = new BymlArray(array);
+    }
+
     public static implicit operator Byml(BymlArray array) => new(array);
     public Byml(BymlArray array)
     {
         Type = BymlNodeType.Array;
         Value = array;
+    }
+
+    public static implicit operator Byml(Dictionary<string, Byml> map) => new(map);
+    public Byml(IDictionary<string, Byml> map)
+    {
+        Type = BymlNodeType.HashMap32;
+        Value = new BymlMap(map);
     }
 
     public static implicit operator Byml(BymlMap map) => new(map);

@@ -6,6 +6,14 @@ namespace BymlLibrary.Nodes.Containers.HashMap;
 
 public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
 {
+    public BymlHashMap64()
+    {
+    }
+
+    public BymlHashMap64(IDictionary<ulong, Byml> values) : base(values)
+    {
+    }
+
     public int GetValueHash()
     {
         HashCode hashCode = new();
