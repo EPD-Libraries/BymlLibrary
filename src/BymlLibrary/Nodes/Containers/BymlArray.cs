@@ -1,6 +1,9 @@
-﻿using BymlLibrary.Writers;
+﻿using BymlLibrary.Extensions;
+using BymlLibrary.Writers;
+using BymlLibrary.Yaml;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers;
 
@@ -18,6 +21,20 @@ public class BymlArray : List<Byml>, IBymlNode
     {
     }
 
+    public void EmitYaml(ref Utf8YamlEmitter emitter)
+    {
+        emitter.BeginSequence((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
+            true => SequenceStyle.Flow,
+            false => SequenceStyle.Block,
+        });
+
+        foreach (Byml node in this) {
+            BymlYamlWriter.Write(ref emitter, node);
+        }
+
+        emitter.EndSequence();
+    }
+
     public int GetValueHash()
     {
         HashCode hashCode = new();
@@ -26,6 +43,17 @@ public class BymlArray : List<Byml>, IBymlNode
         }
 
         return hashCode.ToHashCode();
+    }
+
+    public bool HasContainerNodes()
+    {
+        foreach (var node in this) {
+            if (node.Type.IsContainerType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -1,6 +1,9 @@
-﻿using BymlLibrary.Writers;
+﻿using BymlLibrary.Extensions;
+using BymlLibrary.Writers;
+using BymlLibrary.Yaml;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers.HashMap;
 
@@ -14,6 +17,22 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
     {
     }
 
+    public void EmitYaml(ref Utf8YamlEmitter emitter)
+    {
+        emitter.Tag("!h64");
+        emitter.BeginMapping((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
+            true => MappingStyle.Flow,
+            false => MappingStyle.Block,
+        });
+
+        foreach (var (hash, node) in this) {
+            emitter.WriteUInt64(hash);
+            BymlYamlWriter.Write(ref emitter, node);
+        }
+
+        emitter.EndMapping();
+    }
+
     public int GetValueHash()
     {
         HashCode hashCode = new();
@@ -23,6 +42,17 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
         }
 
         return hashCode.ToHashCode();
+    }
+
+    public bool HasContainerNodes()
+    {
+        foreach ((_, var node) in this) {
+            if (node.Type.IsContainerType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

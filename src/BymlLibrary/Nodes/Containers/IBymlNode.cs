@@ -1,16 +1,12 @@
 ﻿using BymlLibrary.Writers;
-using System.Runtime.CompilerServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers;
 
-internal interface IBymlNode
+public interface IBymlNode
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int GetValueHash();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    void EmitYaml(ref Utf8YamlEmitter emitter);
     internal int Collect(in BymlWriter writer);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void Write(BymlWriter context, Action<Byml> write);
 }

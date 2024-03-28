@@ -6,6 +6,7 @@ using Revrs;
 using Revrs.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Immutable.Containers.HashMap;
 
@@ -114,40 +115,20 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal unsafe void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
+    internal unsafe void EmitYaml(ref Utf8YamlEmitter emitter, in ImmutableByml root)
     {
-        emitter.Builder.Append($"!h64");
+        emitter.Tag("!h64");
+        emitter.BeginMapping((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
+            true => MappingStyle.Flow,
+            false => MappingStyle.Block,
+        });
 
-        if (!emitter.IsIndented && Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) {
-            emitter.Builder.Append(" {");
-            for (int i = 0; i < Count;) {
-                var (hash, node) = this[i];
-                emitter.Builder.Append($"0x{hash:x16}: ");
-                emitter.EmitNode(node, root);
-                if (++i < Count) {
-                    emitter.Builder.Append(", ");
-                }
-            }
-
-            emitter.Builder.Append('}');
-            return;
+        foreach (var (hash, node) in this) {
+            emitter.WriteUInt64(hash);
+            BymlYamlWriter.Write(ref emitter, node, root);
         }
 
-        emitter.NewLine();
-        foreach ((var hash, var node) in this) {
-            if (!emitter.IsIndented) {
-                emitter.NewLine();
-            }
-
-            emitter.IndentLine();
-            emitter.Builder.Append($"0x{hash:x16}");
-            emitter.Builder.Append(": ");
-            emitter.IsInline = true;
-            emitter.IsIndented = false;
-            emitter.Level++;
-            emitter.EmitNode(node, root);
-            emitter.Level--;
-        }
+        emitter.EndMapping();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

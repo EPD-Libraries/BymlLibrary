@@ -1,6 +1,9 @@
-﻿using BymlLibrary.Writers;
+﻿using BymlLibrary.Extensions;
+using BymlLibrary.Writers;
+using BymlLibrary.Yaml;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers.HashMap;
 
@@ -12,6 +15,33 @@ public class BymlHashMap32 : SortedDictionary<uint, Byml>, IBymlNode
 
     public BymlHashMap32(IDictionary<uint, Byml> values) : base(values)
     {
+    }
+
+    public void EmitYaml(ref Utf8YamlEmitter emitter)
+    {
+        emitter.Tag("!h32");
+        emitter.BeginMapping((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
+            true => MappingStyle.Flow,
+            false => MappingStyle.Block,
+        });
+
+        foreach (var (hash, node) in this) {
+            emitter.WriteUInt32(hash);
+            BymlYamlWriter.Write(ref emitter, node);
+        }
+
+        emitter.EndMapping();
+    }
+
+    public bool HasContainerNodes()
+    {
+        foreach (var (_, node) in this) {
+            if (node.Type.IsContainerType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public int GetValueHash()

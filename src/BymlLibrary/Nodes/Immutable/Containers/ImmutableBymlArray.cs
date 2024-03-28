@@ -5,6 +5,7 @@ using BymlLibrary.Yaml;
 using Revrs;
 using Revrs.Extensions;
 using System.Runtime.CompilerServices;
+using VYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Immutable.Containers;
 
@@ -92,34 +93,18 @@ public readonly ref struct ImmutableBymlArray(Span<byte> data, int offset, int c
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal void EmitYaml(YamlEmitter emitter, in ImmutableByml root)
+    internal void EmitYaml(ref Utf8YamlEmitter emitter, in ImmutableByml root)
     {
-        if (Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) {
-            emitter.Builder.Append('[');
-            for (int i = 0; i < Count;) {
-                emitter.EmitNode(this[i], root);
-                if (++i < Count) {
-                    emitter.Builder.Append(", ");
-                }
-            }
+        emitter.BeginSequence((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
+            true => SequenceStyle.Flow,
+            false => SequenceStyle.Block,
+        });
 
-            emitter.Builder.Append(']');
-            return;
+        foreach (ImmutableByml node in this) {
+            BymlYamlWriter.Write(ref emitter, node, root);
         }
 
-        foreach (var node in this) {
-            if (!emitter.IsIndented) {
-                emitter.NewLine();
-            }
-
-            emitter.IndentLine();
-            emitter.Builder.Append("- ");
-            emitter.IsIndented = true;
-            emitter.Level++;
-            emitter.EmitNode(node, root);
-            emitter.Level--;
-            emitter.IsIndented = false;
-        }
+        emitter.EndSequence();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

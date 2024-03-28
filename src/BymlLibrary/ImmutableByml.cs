@@ -5,8 +5,10 @@ using BymlLibrary.Structures;
 using BymlLibrary.Yaml;
 using Revrs;
 using Revrs.Extensions;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Text;
+using VYaml.Emitter;
 
 namespace BymlLibrary;
 
@@ -99,9 +101,16 @@ public readonly ref struct ImmutableByml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ToYaml()
     {
-        YamlEmitter emitter = new();
-        emitter.Emit(this);
-        return emitter.Builder.ToString();
+        ArrayBufferWriter<byte> writer = new();
+        WriteYaml(writer);
+        return Encoding.UTF8.GetString(writer.WrittenSpan);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteYaml(IBufferWriter<byte> writer)
+    {
+        Utf8YamlEmitter emitter = new(writer);
+        BymlYamlWriter.Write(ref emitter, this, this);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

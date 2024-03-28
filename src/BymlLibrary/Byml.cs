@@ -5,9 +5,11 @@ using BymlLibrary.Writers;
 using BymlLibrary.Yaml;
 using Revrs;
 using Revrs.Buffers;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
+using VYaml.Emitter;
 
 namespace BymlLibrary;
 
@@ -151,6 +153,21 @@ public sealed class Byml
     public void WriteBinary(string filename, Endianness endianness, ushort version = 2)
     {
         File.WriteAllBytes(filename, ToBinary(endianness, version));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ToYaml()
+    {
+        ArrayBufferWriter<byte> writer = new();
+        WriteYaml(writer);
+        return Encoding.UTF8.GetString(writer.WrittenSpan);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteYaml(IBufferWriter<byte> writer)
+    {
+        Utf8YamlEmitter emitter = new(writer);
+        BymlYamlWriter.Write(ref emitter, this);
     }
 
     public static implicit operator Byml(Dictionary<uint, Byml> hashMap32) => new(hashMap32);
