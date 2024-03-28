@@ -8,11 +8,11 @@ namespace BymlLibrary.Tests;
 public class BymlOperationsTests
 {
     const string YAML = """
-        Array: [!d NaN, Array_Value]
+        Array: [!f64 NaN, Array_Value]
         Binary: !!binary QmluYXJ5IFZhbHVl
         BinaryAligned: !!file { Alignment: 16, Data: !!binary QmluYXJ5IFZhbHVlIEFsaQ== }
         Bool: true
-        Double: !d 3.141592653589793
+        Double: !f64 3.141592653589793
         Float: 3.1415927
         HashMap32: !h32 { 0: 1073741823, 2147483647: HashMap32_Value }
         HashMap64: !h64 { 0: !s64 4611686018427387903, 9223372036854775807: HashMap64_Value }

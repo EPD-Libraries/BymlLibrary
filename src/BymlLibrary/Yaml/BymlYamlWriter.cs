@@ -11,8 +11,8 @@ public static class BymlYamlWriter
 {
     public static void Write(ref Utf8YamlEmitter emitter, in ImmutableByml byml, in ImmutableByml root)
     {
-        byte[] formattedFloatRentedBuffer = ArrayPool<byte>.Shared.Rent(12);
-        Span<byte> formattedFloatBuffer = formattedFloatRentedBuffer.AsSpan()[..12];
+        byte[] formattedFloatRentedBuffer = ArrayPool<byte>.Shared.Rent(18);
+        Span<byte> formattedFloatBuffer = formattedFloatRentedBuffer.AsSpan()[..18];
 
         switch (byml.Type) {
             case BymlNodeType.HashMap32:
@@ -60,8 +60,8 @@ public static class BymlYamlWriter
                 emitter.WriteUInt64(byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!d");
-                emitter.WriteDouble(byml.GetDouble());
+                emitter.Tag("!f64");
+                WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:
                 emitter.WriteNull();
@@ -86,8 +86,8 @@ public static class BymlYamlWriter
                 return;
         }
 
-        byte[] formattedFloatRentedBuffer = ArrayPool<byte>.Shared.Rent(12);
-        Span<byte> formattedFloatBuffer = formattedFloatRentedBuffer.AsSpan()[..12];
+        byte[] formattedFloatRentedBuffer = ArrayPool<byte>.Shared.Rent(18);
+        Span<byte> formattedFloatBuffer = formattedFloatRentedBuffer.AsSpan()[..18];
 
         switch (byml.Type) {
             case BymlNodeType.String:
@@ -123,8 +123,8 @@ public static class BymlYamlWriter
                 emitter.WriteUInt64(byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!d");
-                emitter.WriteDouble(byml.GetDouble());
+                emitter.Tag("!f64");
+                WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:
                 emitter.WriteNull();
@@ -145,6 +145,17 @@ public static class BymlYamlWriter
 
         int bytesWritten = Encoding.UTF8.GetBytes(formatted, formattedFloatBuffer);
         emitter.WriteScalar(formattedFloatBuffer[..bytesWritten]);
+    }
+
+    private static void WriteDouble(ref Utf8YamlEmitter emitter, ref Span<byte> formattedDoubleBuffer, double value)
+    {
+        string formatted = (value % 1) switch {
+            0 => string.Format(CultureInfo.InvariantCulture, "{0}.0", value),
+            _ => value.ToString(CultureInfo.InvariantCulture.NumberFormat)
+        };
+
+        int bytesWritten = Encoding.UTF8.GetBytes(formatted, formattedDoubleBuffer);
+        emitter.WriteScalar(formattedDoubleBuffer[..bytesWritten]);
     }
 
     private static void WriteBinary(ref Utf8YamlEmitter emitter, Span<byte> data)
