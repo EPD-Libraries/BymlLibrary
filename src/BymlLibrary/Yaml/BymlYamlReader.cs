@@ -31,7 +31,11 @@ internal class BymlYamlReader
     private static Byml ParseScalar(ref YamlParser parser)
     {
         if (parser.IsNullScalar()) {
-            parser.SkipCurrentNode();
+            // Check for empty strings
+            if (parser.TryReadScalarAsString(out _)) {
+                return string.Empty;
+            }
+
             return new();
         }
 
