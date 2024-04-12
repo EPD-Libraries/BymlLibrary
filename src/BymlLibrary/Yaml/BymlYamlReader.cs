@@ -32,7 +32,7 @@ internal class BymlYamlReader
     {
         if (parser.IsNullScalar()) {
             // Check for empty strings
-            if (parser.TryReadScalarAsString(out _)) {
+            if (parser.TryReadScalarAsString(out string? empty) && empty == string.Empty) {
                 return string.Empty;
             }
 
