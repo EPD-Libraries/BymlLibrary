@@ -48,19 +48,19 @@ public static class BymlYamlWriter
                 WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
-                emitter.Tag("!u32");
+                emitter.Tag("!u");
                 emitter.WriteUInt32(byml.GetUInt32());
                 break;
             case BymlNodeType.Int64:
-                emitter.Tag("!s64");
+                emitter.Tag("!l");
                 emitter.WriteInt64(byml.GetInt64());
                 break;
             case BymlNodeType.UInt64:
-                emitter.Tag("!u64");
+                emitter.Tag("!ul");
                 emitter.WriteUInt64(byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!f64");
+                emitter.Tag("!d");
                 WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:
@@ -111,19 +111,19 @@ public static class BymlYamlWriter
                 WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
-                emitter.Tag("!u32");
+                emitter.Tag("!u");
                 emitter.WriteUInt32(byml.GetUInt32());
                 break;
             case BymlNodeType.Int64:
-                emitter.Tag("!s64");
+                emitter.Tag("!l");
                 emitter.WriteInt64(byml.GetInt64());
                 break;
             case BymlNodeType.UInt64:
-                emitter.Tag("!u64");
+                emitter.Tag("!ul");
                 emitter.WriteUInt64(byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!f64");
+                emitter.Tag("!d");
                 WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:

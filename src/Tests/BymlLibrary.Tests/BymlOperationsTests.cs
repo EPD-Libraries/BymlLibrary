@@ -12,17 +12,17 @@ public class BymlOperationsTests
         Binary: !!binary QmluYXJ5IFZhbHVl
         BinaryAligned: !!file { Alignment: 16, Data: !!binary QmluYXJ5IFZhbHVlIEFsaQ== }
         Bool: true
-        Double: !f64 3.141592653589793
+        Double: !d 3.141592653589793
         Float: 3.1415927
         HashMap32: !h32 { 0: 1073741823, 2147483647: HashMap32_Value }
         HashMap64: !h64 { 0: !s64 4611686018427387903, 9223372036854775807: HashMap64_Value }
         Int: 2147483647
-        Int64: !s64 9223372036854775807
+        Int64: !l 9223372036854775807
         Map: { MapKey_A: 3.1415927, MapKey_B: Map_Value }
         "Null": null
         String: String Value
-        UInt32: !u32 4294967295
-        UInt64: !u64 18446744073709551615
+        UInt32: !u 4294967295
+        UInt64: !ul 18446744073709551615
         
         """;
 
