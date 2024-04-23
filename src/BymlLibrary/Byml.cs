@@ -71,7 +71,8 @@ public sealed class Byml
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Byml FromText(string text)
     {
-        using ArraySegmentOwner<byte> utf8 = ArraySegmentOwner<byte>.Allocate(text.Length);
+        int size = Encoding.UTF8.GetByteCount(text);
+        using ArraySegmentOwner<byte> utf8 = ArraySegmentOwner<byte>.Allocate(size);
         Encoding.UTF8.GetBytes(text, utf8.Segment);
         return BymlYamlReader.Parse(utf8.Segment);
     }
