@@ -15,9 +15,9 @@ RevrsReader reader = new(buffer);
 ImmutableByml byml = new(ref reader);
 
 string yaml = byml.ToYaml();
-Byml fromYaml = Byml.FromText(yaml);
-
-File.WriteAllBytes(args[1], fromYaml.ToBinary(byml.Endianness));
 File.WriteAllText(args[2], yaml);
+
+Byml fromYaml = Byml.FromText(yaml);
+File.WriteAllBytes(args[1], fromYaml.ToBinary(byml.Endianness));
 
 #endif
