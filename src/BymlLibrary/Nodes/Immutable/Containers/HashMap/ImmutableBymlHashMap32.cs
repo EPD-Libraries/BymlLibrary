@@ -34,7 +34,7 @@ public readonly ref struct ImmutableBymlHashMap32(Span<byte> data, int offset, i
     /// </summary>
     private readonly Span<BymlNodeType> _types = count == 0 ? []
         : data[(offset + BymlContainer.SIZE + (Entry.SIZE * count))..]
-            .ReadSpan<BymlNodeType>(count + 1);
+            .ReadSpan<BymlNodeType>(count);
 
     public readonly ImmutableBymlHashMap32Entry this[int index] {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
