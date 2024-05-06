@@ -202,7 +202,7 @@ public sealed class Byml
     public static implicit operator Byml(Byml[] array) => new(array);
     public Byml(IEnumerable<Byml> array)
     {
-        Type = BymlNodeType.HashMap32;
+        Type = BymlNodeType.Array;
         Value = new BymlArray(array);
     }
 
@@ -216,7 +216,7 @@ public sealed class Byml
     public static implicit operator Byml(Dictionary<string, Byml> map) => new(map);
     public Byml(IDictionary<string, Byml> map)
     {
-        Type = BymlNodeType.HashMap32;
+        Type = BymlNodeType.Map;
         Value = new BymlMap(map);
     }
 
