@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.Marshalling;
+using System.Runtime.InteropServices;
 
 namespace BymlLibrary.Extensions;
 
@@ -9,8 +9,7 @@ public static class Utf8Extensions
     public static unsafe string ToManaged(this Span<byte> utf8)
     {
         fixed (byte* ptr = utf8) {
-            return Utf8StringMarshaller.ConvertToManaged(ptr)
-                ?? string.Empty;
+            return Marshal.PtrToStringUTF8((IntPtr)ptr, utf8.Length);
         }
     }
 }
