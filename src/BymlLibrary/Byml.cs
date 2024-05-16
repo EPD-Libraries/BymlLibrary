@@ -374,7 +374,7 @@ public sealed class Byml
         throw new InvalidDataException($"""
             Unexpected type: '{typeof(T)}'
 
-                Expected '{typeof(T)}' but found '{Value.GetType()} ({Type})'
+            Expected '{typeof(T)}' but found '{Value.GetType()} ({Type})'
             """);
     }
 
