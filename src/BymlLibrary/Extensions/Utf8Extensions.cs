@@ -9,7 +9,7 @@ public static class Utf8Extensions
     public static unsafe string ToManaged(this Span<byte> utf8)
     {
         fixed (byte* ptr = utf8) {
-            return Marshal.PtrToStringUTF8((IntPtr)ptr, utf8.Length);
+            return Marshal.PtrToStringUTF8((IntPtr)ptr, utf8.Length - 1);
         }
     }
 }
