@@ -2,7 +2,7 @@
   "profiles": {
     "BymlLibrary.Runner": {
       "commandName": "Project",
-      "commandLineArgs": "\"D:\\bin\\.todo\\GDL\\(src)-GameDataList.Product.110.byml\" \"D:\\bin\\.todo\\GDL\\GameDataList.Product.110.byml\" \"D:\\bin\\.todo\\GDL\\GameDataList.Product.110.yml\""
+      "commandLineArgs": "\"D:\\bin\\Byml\\(src)-GameDataList.Product.110.byml\" \"D:\\bin\\Byml\\(md)-GameDataList.Product.110.byml\" \"D:\\bin\\Byml\\GameDataList.Product.110.yml\""
     }
   }
 }
