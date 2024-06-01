@@ -6,7 +6,7 @@ using Revrs;
 using Revrs.Extensions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Immutable.Containers.HashMap;
 
@@ -117,7 +117,7 @@ public readonly ref struct ImmutableBymlHashMap64(Span<byte> data, int offset, i
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal unsafe void EmitYaml(ref Utf8YamlEmitter emitter, in ImmutableByml root)
     {
-        emitter.Tag("!h64");
+        emitter.SetTag("!h64");
         emitter.BeginMapping((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
             true => MappingStyle.Flow,
             false => MappingStyle.Block,

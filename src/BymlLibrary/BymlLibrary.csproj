@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiteYaml" Version="0.1.0" />
     <PackageReference Include="Revrs" Version="1.0.5" />
-    <PackageReference Include="VYaml" Version="0.25.1" />
   </ItemGroup>
 
 </Project>

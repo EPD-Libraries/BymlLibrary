@@ -2,7 +2,7 @@
 using BymlLibrary.Nodes.Containers.HashMap;
 using System.Buffers;
 using System.Runtime.CompilerServices;
-using VYaml.Parser;
+using LiteYaml.Parser;
 
 namespace BymlLibrary.Yaml;
 

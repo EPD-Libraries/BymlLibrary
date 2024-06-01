@@ -5,7 +5,7 @@ using Revrs;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers;
 

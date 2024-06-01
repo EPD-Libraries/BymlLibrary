@@ -9,7 +9,7 @@ using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary;
 

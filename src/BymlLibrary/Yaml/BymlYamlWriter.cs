@@ -1,9 +1,9 @@
 ﻿using BymlLibrary.Nodes.Containers;
 using BymlLibrary.Nodes.Immutable.Containers;
+using LiteYaml.Emitter;
 using System.Buffers;
 using System.Globalization;
 using System.Text;
-using VYaml.Emitter;
 
 namespace BymlLibrary.Yaml;
 
@@ -53,19 +53,19 @@ public static class BymlYamlWriter
                 WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
-                emitter.Tag("!u");
+                emitter.SetTag("!u");
                 WriteUInt32(ref emitter, ref formattedHexBuffer, byml.GetUInt32());
                 break;
             case BymlNodeType.Int64:
-                emitter.Tag("!l");
+                emitter.SetTag("!l");
                 emitter.WriteInt64(byml.GetInt64());
                 break;
             case BymlNodeType.UInt64:
-                emitter.Tag("!ul");
+                emitter.SetTag("!ul");
                 WriteUInt64(ref emitter, ref formattedHexBuffer, byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!d");
+                emitter.SetTag("!d");
                 WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:
@@ -121,19 +121,19 @@ public static class BymlYamlWriter
                 WriteFloat(ref emitter, ref formattedFloatBuffer, byml.GetFloat());
                 break;
             case BymlNodeType.UInt32:
-                emitter.Tag("!u");
+                emitter.SetTag("!u");
                 WriteUInt32(ref emitter, ref formattedHexBuffer, byml.GetUInt32());
                 break;
             case BymlNodeType.Int64:
-                emitter.Tag("!l");
+                emitter.SetTag("!l");
                 emitter.WriteInt64(byml.GetInt64());
                 break;
             case BymlNodeType.UInt64:
-                emitter.Tag("!ul");
+                emitter.SetTag("!ul");
                 WriteUInt64(ref emitter, ref formattedHexBuffer, byml.GetUInt64());
                 break;
             case BymlNodeType.Double:
-                emitter.Tag("!d");
+                emitter.SetTag("!d");
                 WriteDouble(ref emitter, ref formattedFloatBuffer, byml.GetDouble());
                 break;
             case BymlNodeType.Null:
@@ -182,7 +182,7 @@ public static class BymlYamlWriter
 
     private static void WriteBinary(ref Utf8YamlEmitter emitter, Span<byte> data)
     {
-        emitter.Tag("!!binary");
+        emitter.SetTag("!!binary");
         emitter.WriteString(
             Convert.ToBase64String(data)
         );
@@ -190,12 +190,12 @@ public static class BymlYamlWriter
 
     private static void WriteBinaryAligned(ref Utf8YamlEmitter emitter, in Span<byte> data, int alignment)
     {
-        emitter.Tag("!!file");
+        emitter.SetTag("!!file");
         emitter.BeginMapping(MappingStyle.Flow);
         emitter.WriteString("Alignment");
         emitter.WriteInt32(alignment);
         emitter.WriteString("Data");
-        emitter.Tag("!!binary");
+        emitter.SetTag("!!binary");
         emitter.WriteString(Convert.ToBase64String(data));
         emitter.EndMapping();
     }

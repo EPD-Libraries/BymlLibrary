@@ -3,7 +3,7 @@ using BymlLibrary.Writers;
 using BymlLibrary.Yaml;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers.HashMap;
 
@@ -19,7 +19,7 @@ public class BymlHashMap64 : SortedDictionary<ulong, Byml>, IBymlNode
 
     public void EmitYaml(ref Utf8YamlEmitter emitter)
     {
-        emitter.Tag("!h64");
+        emitter.SetTag("!h64");
         emitter.BeginMapping((Count < Byml.YamlConfig.InlineContainerMaxCount && !HasContainerNodes()) switch {
             true => MappingStyle.Flow,
             false => MappingStyle.Block,

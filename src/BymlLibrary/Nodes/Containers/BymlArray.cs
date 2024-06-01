@@ -3,7 +3,7 @@ using BymlLibrary.Writers;
 using BymlLibrary.Yaml;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Containers;
 

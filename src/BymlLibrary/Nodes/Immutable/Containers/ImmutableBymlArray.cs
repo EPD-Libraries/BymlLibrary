@@ -5,7 +5,7 @@ using BymlLibrary.Yaml;
 using Revrs;
 using Revrs.Extensions;
 using System.Runtime.CompilerServices;
-using VYaml.Emitter;
+using LiteYaml.Emitter;
 
 namespace BymlLibrary.Nodes.Immutable.Containers;
 
