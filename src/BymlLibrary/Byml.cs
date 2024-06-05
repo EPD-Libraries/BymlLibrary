@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Text;
 using LiteYaml.Emitter;
+using BymlLibrary.Nodes.Immutable.Containers;
 
 namespace BymlLibrary;
 
@@ -63,8 +64,15 @@ public sealed class Byml
 
     public static Byml FromBinary(Span<byte> data)
     {
+        return FromBinary(data, out _, out _);
+    }
+
+    public static Byml FromBinary(Span<byte> data, out Endianness endianness, out ushort version)
+    {
         RevrsReader reader = new(data);
         ImmutableByml byml = new(ref reader);
+        endianness = byml.Endianness;
+        version = byml.Header.Version;
         return FromImmutable(byml, byml);
     }
 
