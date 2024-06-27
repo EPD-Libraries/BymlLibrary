@@ -37,7 +37,6 @@ internal class BymlWriter
         int rootNodeOffset = (int)Writer.Position;
 
         Write(_root);
-        // Writer.Flush();
 
         Writer.Seek(0);
         Writer.Write<BymlHeader, BymlHeader.Reverser>(new(
