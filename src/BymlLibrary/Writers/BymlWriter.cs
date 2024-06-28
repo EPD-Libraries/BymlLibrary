@@ -92,7 +92,7 @@ internal class BymlWriter
                 Writer.Seek(offset);
 
                 if (node.Value is (byte[] _, int alignment)) {
-                    currentPosition += currentPosition.AlignUp(alignment) - 8;
+                    currentPosition += (currentPosition + 8).AlignUp(alignment);
                 }
 
                 Writer.Write(currentPosition);
